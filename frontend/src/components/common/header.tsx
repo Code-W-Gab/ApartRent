@@ -13,7 +13,7 @@ export default function header(){
         <div className='flex items-center justify-center bg-pink-300 size-8 rounded-full text-xs'>
           AM
         </div>
-        <ChevronDown size={20}/>
+        <ChevronDown size={20} className='text-gray-500'/>
       </div>
     </header>
   )
