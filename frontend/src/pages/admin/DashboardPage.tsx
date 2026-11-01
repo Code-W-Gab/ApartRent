@@ -5,7 +5,7 @@ export default function DashboardPage() {
     <main>
       <AdminLayout>
         <div>
-          Boddddy
+          Dashboard
         </div>
       </AdminLayout>
     </main>
