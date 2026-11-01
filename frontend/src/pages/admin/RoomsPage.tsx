@@ -1,4 +1,4 @@
-import { BuildingComplex, DoorOpen, Plus, Search, UsersRound, Wrench } from "lucide-react"
+import { BuildingComplex, DoorOpen, Plus, Search, UserRound, UsersRound, Wrench } from "lucide-react"
 import AdminLayout from "../../components/layout/AdminLayout"
 import Dropdown from "../../components/common/dropdown"
 import type React from "react"
@@ -79,7 +79,7 @@ export default function RoomsPage() {
             </div>
             
             <div className="border border-gray-300 rounded-xl">
-              <div className="p-4 flex items-center justify-between">
+              <div className="p-4 flex items-center justify-between border-b border-gray-300">
                 <div className="inline-flex items-center gap-2 w-70 border border-gray-300 px-3 py-2 rounded-lg">
                   <Search size={18} className="text-gray-500"/>
                   <input type="text" placeholder="Search room number..." className="text-sm focus:outline-none"/>
@@ -88,6 +88,26 @@ export default function RoomsPage() {
                 <div className="flex items-center gap-4">
                   <Dropdown dropdownOptions={statusOptions}/>
                   <Dropdown dropdownOptions={floorOptions}/>
+                </div>
+              </div>
+
+              <div className="p-4 grid grid-cols-3 gap-4 ">
+                <div className="border border-gray-300 rounded-lg">
+                  <div className="flex items-center justify-center h-40 bg-gray-200 rounded-tl-lg rounded-tr-lg">
+                    <DoorOpen size={40}/>
+                  </div>
+                  <div className="p-4 space-y-3">
+                    <h1 className="text-lg font-medium">Room 101</h1>
+                    <div className="text-sm text-gray-500">Single room - Floor 1</div>
+                    <div >
+                      <span className="text-2xl font-medium">₱4,500</span>
+                      <span className="text-sm text-gray-500"> / month</span>
+                    </div> 
+                    <div className="flex items-center gap-2 text-gray-500 text-sm">
+                      <UserRound size={16}/>
+                      <span>Gabriel Concepcion</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
