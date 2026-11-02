@@ -1,4 +1,4 @@
-import { BuildingComplex, DoorOpen, Plus, Search, UserRound, UsersRound, Wrench } from "lucide-react"
+import { ArrowRight, BuildingComplex, DoorOpen, Dot, Plus, Search, UserRound, UsersRound, Wrench } from "lucide-react"
 import AdminLayout from "../../components/layout/AdminLayout"
 import Dropdown from "../../components/common/dropdown"
 import type React from "react"
@@ -91,10 +91,15 @@ export default function RoomsPage() {
                 </div>
               </div>
 
-              <div className="p-4 grid grid-cols-3 gap-4 ">
+              <div className="p-4 grid grid-cols-3 gap-4 border-b border-gray-300">
                 <div className="border border-gray-300 rounded-lg">
-                  <div className="flex items-center justify-center h-40 bg-gray-200 rounded-tl-lg rounded-tr-lg">
+                  <div className="relative flex items-center justify-center h-40 bg-gray-200 rounded-tl-lg rounded-tr-lg">
                     <DoorOpen size={40}/>
+                    <div className="absolute top-2 right-2 flex items-center text-sm text-blue-400 border border-white pr-2 rounded-sm">
+                      <Dot size={20}/>
+                      <span>Occupied</span>
+                    </div>
+                    <div className="absolute bottom-2 left-4 text-sm text-gray-500">01 / 101</div>
                   </div>
                   <div className="p-4 space-y-3">
                     <h1 className="text-lg font-medium">Room 101</h1>
@@ -107,9 +112,17 @@ export default function RoomsPage() {
                       <UserRound size={16}/>
                       <span>Gabriel Concepcion</span>
                     </div>
+                    <button className="flex items-center justify-between w-full border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md cursor-pointer hover:border-gray-500">
+                      <span>View details</span>
+                      <ArrowRight size={18}/>
+                    </button>
                   </div>
                 </div>
               </div>
+
+              <div>hasdhas</div>
+
+              
             </div>
           </section>
         </div>
