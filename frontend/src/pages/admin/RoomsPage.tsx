@@ -120,7 +120,14 @@ export default function RoomsPage() {
                 </div>
               </div>
 
-              <div>hasdhas</div>
+              <div className="p-4 flex items-center justify-between">
+                <div className="text-sm text-gray-500">Showing 1-9 of 18 records</div>
+                <div className="flex items-center gap-3">
+                  <button className="border border-gray-300 text-gray-500 px-3 py-1.5 rounded-md text-sm cursor-pointer  hover:border-gray-500">Previous</button>
+                  <button className="border border-gray-300 text-gray-500 px-3 py-1.5 rounded-md text-sm">1</button>
+                  <button className="border border-gray-300 text-gray-500 px-3 py-1.5 rounded-md text-sm cursor-pointer hover:border-gray-500">Next</button>
+                </div>
+              </div>
 
               
             </div>
