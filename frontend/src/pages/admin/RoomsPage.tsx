@@ -2,6 +2,8 @@ import { ArrowRight, BuildingComplex, DoorOpen, Dot, Plus, Search, UserRound, Us
 import AdminLayout from "../../components/layout/AdminLayout"
 import Dropdown from "../../components/common/dropdown"
 import type React from "react"
+import { useState } from "react"
+import ViewDetailsModal from "../../components/overlays/ViewDetailsModal"
 
 interface INav {
   label: string,
@@ -40,6 +42,8 @@ const statusOptions: DropdownOption[] = [
 
 
 export default function RoomsPage() {
+  const [isViewDetailsModalOpen, setIsViewDetailsModalOpen] = useState<boolean>(false)
+
   return(
     <main>
       <AdminLayout>
@@ -112,7 +116,7 @@ export default function RoomsPage() {
                       <UserRound size={16}/>
                       <span>Gabriel Concepcion</span>
                     </div>
-                    <button className="flex items-center justify-between w-full border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md cursor-pointer hover:border-gray-500">
+                    <button onClick={() => setIsViewDetailsModalOpen(true)} className="flex items-center justify-between w-full border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md cursor-pointer hover:border-gray-500">
                       <span>View details</span>
                       <ArrowRight size={18}/>
                     </button>
@@ -129,9 +133,16 @@ export default function RoomsPage() {
                 </div>
               </div>
 
-              
             </div>
           </section>
+
+          {isViewDetailsModalOpen && (
+            <div className="fixed inset-0 flex bg-gray-800/50 items-center justify-center z-40">
+              <div className="z-50">
+                <ViewDetailsModal onClose={() => setIsViewDetailsModalOpen(false)}/>
+              </div>
+            </div>
+          )}
         </div>
       </AdminLayout>
     </main>
