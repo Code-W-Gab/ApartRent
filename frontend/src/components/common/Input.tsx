@@ -25,6 +25,12 @@ export default function Input({label, type, placeholder, children}: InputProps) 
           min={0}
           className="border border-[#dfe5ed] text-[#526174] px-3 py-2 h-10 rounded-md text-sm"
         />
+      : type === "file"
+      ? <input 
+          type="file"
+          id={label}
+          className="border border-[#dfe5ed] bg-gray-100 text-[#526174] px-3 py-2 h-10 w-full rounded-md text-sm "
+        />
       : type === "textarea" 
       ? <textarea 
           id={label}
