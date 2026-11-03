@@ -12,7 +12,7 @@ interface DropdownProps {
 export default function Dropdown({ dropdownOptions }: DropdownProps) {
   return (
     <div className="relative">
-      <select className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2 pr-10 text-sm text-gray-700 focus:outline-1">
+      <select className="w-full appearance-none rounded-lg border border-[#dfe5ed] bg-white px-4 py-2 pr-10 h-10 text-sm text-[#526174] focus:outline-1">
         {dropdownOptions.map((opt, index) => (
           <option key={index} value={opt.value}>
             {opt.option}

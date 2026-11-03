@@ -4,6 +4,7 @@ import Dropdown from "../../components/common/dropdown"
 import type React from "react"
 import { useState } from "react"
 import ViewDetailsModal from "../../components/overlays/ViewDetailsModal"
+import AddRoomModal from "../../components/overlays/AddRoomModal"
 
 interface INav {
   label: string,
@@ -43,6 +44,7 @@ const statusOptions: DropdownOption[] = [
 
 export default function RoomsPage() {
   const [isViewDetailsModalOpen, setIsViewDetailsModalOpen] = useState<boolean>(false)
+  const [isAddRoomModalOpen, setIsAddRoomModalOpen] = useState<boolean>(false);
 
   return(
     <main>
@@ -55,7 +57,7 @@ export default function RoomsPage() {
                 <h1 className="text-3xl font-semibold text-[#243E59]">Rooms</h1>
               </div>
               <div>
-                <button className="flex items-center gap-2 px-4 py-3 rounded-md text-white bg-[#243E59]">
+                <button onClick={() => setIsAddRoomModalOpen(true)} className="flex items-center gap-2 px-4 py-3 rounded-md text-white bg-[#243E59]">
                   <Plus size={18}/>
                   <span className="text-sm">Add room</span>
                 </button>
@@ -140,6 +142,14 @@ export default function RoomsPage() {
             <div className="fixed inset-0 flex bg-gray-800/50 items-center justify-center z-40">
               <div className="z-50">
                 <ViewDetailsModal onClose={() => setIsViewDetailsModalOpen(false)}/>
+              </div>
+            </div>
+          )}
+
+          {isAddRoomModalOpen && (
+            <div className="fixed inset-0 flex bg-gray-800/50 items-center justify-center z-40">
+              <div className="z-50">
+                <AddRoomModal onClose={() => setIsAddRoomModalOpen(false)}/>
               </div>
             </div>
           )}
