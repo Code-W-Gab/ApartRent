@@ -21,3 +21,7 @@ export interface IRoom {
 }
 
 export type createRoomDTO = IRoom
+
+export interface IdParams {
+  id: string
+}

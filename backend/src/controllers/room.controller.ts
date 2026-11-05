@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { createRoomDTO } from "../types/room.types";
+import { createRoomDTO, IdParams } from "../types/room.types";
 import roomSchema from "../models/room.schema";
 
 export const createRoom: RequestHandler<{}, {}, createRoomDTO> = async (req, res) => {
@@ -10,6 +10,24 @@ export const createRoom: RequestHandler<{}, {}, createRoomDTO> = async (req, res
       success: true,
       message: "Room added successfully",
       data: newRoom
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    })
+  }
+}
+
+export const deleteRoom: RequestHandler<IdParams, {}, {}> = async (req, res) => {
+  try {
+    const room = await roomSchema.findByIdAndDelete(req.params.id);
+
+    if(!room) return res.status(404).json({ message: "Room not found" })
+
+    res.status(200).json({
+      success: true,
+      message: "Room deleted successfully"
     })
   } catch (error) {
     res.status(500).json({
