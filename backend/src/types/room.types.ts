@@ -22,6 +22,8 @@ export interface IRoom {
 
 export type createRoomDTO = IRoom
 
+export type updateRoomDto = Partial<IRoom>
+
 export interface IdParams {
   id: string
 }
