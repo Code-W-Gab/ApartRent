@@ -4,6 +4,7 @@ import Dropdown from "../common/dropdown";
 import Checkbox from "../common/Checkbox";
 import type { roomType, status, floor } from '../../types/room.types'
 import { useState } from "react";
+import { useRoom } from "../../hook/useRoom";
 
 interface ModalProps {
   onClose: () => void;
@@ -44,22 +45,20 @@ export default function AddRoomModal({ onClose }: ModalProps) {
   const [amenities, setAmenities] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
   const [photos, setPhotos] = useState<File[]>([]);
-
+  const { handleCreateRoom } = useRoom()
 
   const roomData = {
-    roomNumber,
+    roomNumber: Number(roomNumber),
     floor,
     type,
-    monthlyRent,
-    deposit,
+    monthlyRent: Number(monthlyRent),
+    deposit: Number(deposit),
     status,
     description,
+    amenities,
     notes
   }
 
-  const handleCreateRoom = () => {
-    console.log(roomData)
-  }
 
   return (
     <div className="flex max-h-[85vh] w-[min(90vw,46rem)] flex-col overflow-hidden rounded-xl bg-white shadow-xl">
@@ -181,7 +180,7 @@ export default function AddRoomModal({ onClose }: ModalProps) {
 
       <div className="p-4 flex items-center justify-end gap-3">
         <button onClick={onClose} className="border border-[#dfe5ed] text-[#526174] px-4 py-1.5 rounded-md hover:border-[#bec1c5] cursor-pointer">Cancel</button>
-        <button onClick={handleCreateRoom} className="bg-[#243E59] text-white px-4 py-1.5 rounded-md cursor-pointer">Save room</button>
+        <button onClick={() => handleCreateRoom(roomData, onClose)} className="bg-[#243E59] text-white px-4 py-1.5 rounded-md cursor-pointer">Save room</button>
       </div>
     </div>
   );

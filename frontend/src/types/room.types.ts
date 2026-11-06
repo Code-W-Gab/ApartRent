@@ -16,14 +16,14 @@ export type floor =
 
 export interface IRoom {
   _id: string
-  roomNumber: string,
+  roomNumber: number,
   floor: floor,
   type: roomType,
   monthlyRent: number,
   deposit: number,
   status: status,
   description?: string,
-  amenities: [string],
+  amenities: string[],
   notes?: string
 }
 

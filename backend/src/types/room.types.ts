@@ -9,7 +9,7 @@ type roomType =
   | "Deluxe studio"
 
 export interface IRoom {
-  roomNumber: string,
+  roomNumber: number,
   floor: number,
   type: roomType,
   monthlyRent: number,
