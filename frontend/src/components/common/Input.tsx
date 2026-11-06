@@ -1,45 +1,75 @@
-interface InputProps {
-  label: string,
-  type: string,
-  placeholder?: string
-  children?: React.ReactElement
-}
+import type { ReactNode } from "react";
 
-export default function Input({label, type, placeholder, children}: InputProps) {
-  return(
+type InputProps = {
+  label: string;
+  placeholder?: string;
+} & (
+  | {
+      type: "text" | "number" | "textarea";
+      value: string;
+      setValue: (value: string) => void;
+      children?: never;
+    }
+  | {
+      type: "select";
+      children: ReactNode;
+      value?: never;
+      setValue?: never;
+    }
+  | {
+      type: "file";
+      setFiles: (files: FileList | null) => void;
+      value?: never;
+      setValue?: never;
+      children?: never;
+    }
+);
+
+export default function Input(props: InputProps) {
+  const className =
+    "border border-[#dfe5ed] text-[#526174] px-3 py-2 rounded-md text-sm";
+
+  return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={label} className="text-[#526174] text-sm font-medium">{label}</label>
-      {
-      type === "text" 
-      ? <input 
-          type={type} 
-          id={label}
-          placeholder={placeholder}
-          className="border border-[#dfe5ed] text-[#526174] px-3 py-2 h-10 rounded-md text-sm"
-        />
-      : type === "number" 
-      ? <input 
-          type={type} 
-          id={label}
-          placeholder={placeholder}
-          min={0}
-          className="border border-[#dfe5ed] text-[#526174] px-3 py-2 h-10 rounded-md text-sm"
-        />
-      : type === "file"
-      ? <input 
+      <label
+        htmlFor={props.label}
+        className="text-[#526174] text-sm font-medium"
+      >
+        {props.label}
+      </label>
+
+      {props.type === "select" ? (
+        props.children
+      ) : props.type === "file" ? (
+        <input
+          id={props.label}
           type="file"
-          id={label}
-          className="border border-[#dfe5ed] bg-gray-100 text-[#526174] px-3 py-2 h-10 w-full rounded-md text-sm "
+          accept="image/*"
+          multiple
+          onChange={(event) => props.setFiles(event.target.files)}
+          className={`${className} h-10`}
         />
-      : type === "textarea" 
-      ? <textarea 
-          id={label}
-          placeholder={placeholder} 
-          rows={4} 
-          className="border border-[#dfe5ed] text-[#526174] rounded-md text-sm p-2"
-        ></textarea>
-      : children
-      }
+      ) : props.type === "textarea" ? (
+        <textarea
+          id={props.label}
+          placeholder={props.placeholder}
+          value={props.value}
+          onChange={(event) => props.setValue(event.target.value)}
+          rows={4}
+          className={className}
+        />
+      ) : (
+        <input
+          id={props.label}
+          type={props.type}
+          placeholder={props.placeholder}
+          value={props.value}
+          onChange={(event) => props.setValue(event.target.value)}
+          min={props.type === "number" ? 0 : undefined}
+          step={props.type === "number" ? "0.01" : undefined}
+          className={`${className} h-10`}
+        />
+      )}
     </div>
-  )
+  );
 }

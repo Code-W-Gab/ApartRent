@@ -2,36 +2,65 @@ import { X } from "lucide-react";
 import Input from "../common/Input";
 import Dropdown from "../common/dropdown";
 import Checkbox from "../common/Checkbox";
+import type { roomType, status, floor } from '../../types/room.types'
+import { useState } from "react";
 
 interface ModalProps {
   onClose: () => void;
 }
 
-interface DropdownOption {
+interface DropdownOption<T> {
   option: string;
-  value: string;
+  value: T;
 }
 
-const floorOptions: DropdownOption[] = [
-  { option: "1", value: "" },
-  { option: "2", value: "" },
-  { option: "3", value: "" },
-  { option: "4", value: "" },
+const floorOptions: DropdownOption<floor>[] = [
+  { option: "1", value: 1 },
+  { option: "2", value: 2 },
+  { option: "3", value: 3 },
+  { option: "4", value: 4 },
 ];
 
-const roomTypeOptions: DropdownOption[] = [
-  { option: "Standard studio", value: "" },
-  { option: "Single room", value: "" },
-  { option: "Deluxe studio", value: "" },
+const roomTypeOptions: DropdownOption<roomType>[] = [
+  { option: "Standard studio", value: "Standard studio" },
+  { option: "Single room", value: "Single room" },
+  { option: "Deluxe studio", value: "Deluxe studio" },
 ];
 
-const statusTypeOptions: DropdownOption[] = [
-  { option: "Available", value: "" },
-  { option: "Occupied", value: "" },
-  { option: "Reserved", value: "" },
+const statusTypeOptions: DropdownOption<status>[] = [
+  { option: "Available", value: "Available" },
+  { option: "Occupied", value: "Occupied" },
+  { option: "Reserved", value: "Reserved" },
 ];
 
 export default function AddRoomModal({ onClose }: ModalProps) {
+  const [roomNumber, setRoomNumber] = useState("");
+  const [floor, setFloor] = useState<floor>(1);
+  const [type, setType] = useState<roomType>("Standard studio");
+  const [monthlyRent, setMonthlyRent] = useState("");
+  const [deposit, setDeposit] = useState("");
+  const [status, setStatus] = useState<status>("Available");
+  const [description, setDescription] = useState("");
+  const [amenities, setAmenities] = useState<string[]>([]);
+  const [notes, setNotes] = useState("");
+  const [photos, setPhotos] = useState<File[]>([]);
+
+
+  const roomData = {
+    roomNumber,
+    floor,
+    type,
+    monthlyRent,
+    deposit,
+    status,
+    description,
+    notes
+  }
+
+  const handleCreateRoom = () => {
+    console.log(roomData)
+  }
+
   return (
     <div className="flex max-h-[85vh] w-[min(90vw,46rem)] flex-col overflow-hidden rounded-xl bg-white shadow-xl">
       <div className="flex shrink-0 items-center justify-between border-b border-gray-300 p-5">
@@ -48,50 +77,111 @@ export default function AddRoomModal({ onClose }: ModalProps) {
           </p>
 
           <div className="grid grid-cols-2 gap-4">
-            <Input label="Room number *" type="text" placeholder="e.g. 405" />
+            <Input
+              label="Room number *"
+              type="text"
+              placeholder="e.g. 405"
+              value={roomNumber}
+              setValue={setRoomNumber}
+            />
+
             <Input label="Floor *" type="select">
-              <Dropdown dropdownOptions={floorOptions} />
-            </Input>
-            <Input label="Room type *" type="select">
-              <Dropdown dropdownOptions={roomTypeOptions} />
-            </Input>
-            <Input label="Monthly rent (₱) *" type="number" placeholder="5,000" />
-            <Input label="Security deposit (₱) *" type="number" placeholder="5,000" />
-            <Input label="Occupancy status" type="select">
-              <Dropdown dropdownOptions={statusTypeOptions} />
+              <Dropdown<floor>
+                id="Floor *"
+                dropdownOptions={floorOptions}
+                value={floor}
+                setValue={setFloor}
+              />
             </Input>
 
-            <div className="col-span-2">
+            <Input label="Room type *" type="select">
+              <Dropdown<roomType>
+                id="Room type *"
+                dropdownOptions={roomTypeOptions}
+                value={type}
+                setValue={setType}
+              />
+            </Input>
+
+            <Input
+              label="Monthly rent (₱) *"
+              type="number"
+              placeholder="5000"
+              value={monthlyRent}
+              setValue={setMonthlyRent}
+            />
+
+            <Input
+              label="Security deposit (₱) *"
+              type="number"
+              placeholder="5000"
+              value={deposit}
+              setValue={setDeposit}
+            />
+
+            <Input label="Occupancy status" type="select">
+              <Dropdown<status>
+                id="Occupancy status"
+                dropdownOptions={statusTypeOptions}
+                value={status}
+                setValue={setStatus}
+              />
+            </Input>
+
+            <div className="col-span-2 space-y-4">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="amenities" className="text-[#526174] text-sm font-medium">Amenities</label>
+                <div className="flex items-center gap-4">
+                  {["Air conditioning", "Private bathroom", "Wi-Fi", "Kitchenette"].map(
+                    (amenity) => (
+                      <Checkbox
+                        key={amenity}
+                        label={amenity}
+                        checked={amenities.includes(amenity)}
+                        setChecked={(checked) => {
+                          setAmenities((previous) =>
+                            checked
+                              ? [...previous.filter((item) => item !== amenity), amenity]
+                              : previous.filter((item) => item !== amenity),
+                          );
+                        }}
+                      />
+                    ),
+                  )}
+                </div>
+              </div>
+
               <Input
                 label="Description"
                 type="textarea"
                 placeholder="What makes this room feel like home?"
+                value={description}
+                setValue={setDescription}
+              />
+
+              <Input
+                label="Room photos"
+                type="file"
+                setFiles={(files) => setPhotos(Array.from(files ?? []))}
+              />
+
+              <Input
+                label="Administrative notes"
+                type="textarea"
+                placeholder="Internal notes, not visible to tenants"
+                value={notes}
+                setValue={setNotes}
               />
             </div>
-          </div>
 
-          <div>
-            <h3 className="text-sm font-medium text-[#526174]">Amenities</h3>
-            <div className="mt-3 flex items-center gap-4">
-              <Checkbox label="Air conditioning"/>
-              <Checkbox label="Private bathroom"/>
-              <Checkbox label="Wi-Fi"/>
-              <Checkbox label="Kitchenette"/>
-            </div>
+            
           </div>
-
-          <Input label="Room photos" type="file"/>
-          <Input 
-              label="Administrative notes"
-              type="textarea"
-              placeholder="Internal notes, not visible to tenants"
-            />
         </div>
       </div>
 
       <div className="p-4 flex items-center justify-end gap-3">
         <button onClick={onClose} className="border border-[#dfe5ed] text-[#526174] px-4 py-1.5 rounded-md hover:border-[#bec1c5] cursor-pointer">Cancel</button>
-        <button className="bg-[#243E59] text-white px-4 py-1.5 rounded-md cursor-pointer">Save room</button>
+        <button onClick={handleCreateRoom} className="bg-[#243E59] text-white px-4 py-1.5 rounded-md cursor-pointer">Save room</button>
       </div>
     </div>
   );
