@@ -34,8 +34,8 @@ export default function Dropdown<T extends string | number>({
         }}
         className="w-full appearance-none rounded-lg border border-[#dfe5ed] bg-white px-4 py-2 pr-10 h-10 text-sm text-[#526174] focus:outline-1"
       >
-        {dropdownOptions.map((option) => (
-          <option key={option.value} value={option.value}>
+        {dropdownOptions.map((option, index) => (
+          <option key={index} value={option.value}>
             {option.option}
           </option>
         ))}

@@ -24,7 +24,7 @@ export const useRoom = () => {
   ) => {
     try {
       await createRoom(roomData)
-      handleFetchRoom()
+      await handleFetchRoom()
       console.log(roomData)
       onClose()
     } catch (error) {

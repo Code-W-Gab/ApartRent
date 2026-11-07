@@ -72,10 +72,10 @@ export default function RoomsPage() {
             <div className="grid grid-cols-4 gap-4">
               {navOption.map((nav, index) => {
                 return(
-                  <div key={index} className="border border-gray-300 bg-white p-4 rounded-xl space-y-2.5">
+                  <div key={index} className="border border-[#dfe5ed] bg-white p-4 rounded-xl space-y-2.5">
                     <div className="flex items-center justify-between text-gray-500">
                       <h4>{nav.label}</h4>
-                      <div className="border border-gray-300 flex items-center justify-center p-1 rounded-md bg-gray-100">
+                      <div className="border border-[#dfe5ed] flex items-center justify-center p-1 rounded-md bg-gray-100">
                         <nav.icon size={18}/>
                       </div>
                     </div>
@@ -86,9 +86,9 @@ export default function RoomsPage() {
               })}
             </div>
             
-            <div className="border border-gray-300 rounded-xl">
-              <div className="p-4 flex items-center justify-between border-b border-gray-300">
-                <div className="inline-flex items-center gap-2 w-70 border border-gray-300 px-3 py-2 rounded-lg">
+            <div className="border border-[#dfe5ed] rounded-xl">
+              <div className="p-4 flex items-center justify-between border-b border-[#dfe5ed]">
+                <div className="inline-flex items-center gap-2 w-70 border border-[#dfe5ed] px-3 py-2 rounded-lg">
                   <Search size={18} className="text-gray-500"/>
                   <input type="text" placeholder="Search room number..." className="text-sm focus:outline-none"/>
                 </div>
@@ -99,10 +99,10 @@ export default function RoomsPage() {
                 </div>
               </div>
 
-              <div className="p-4 grid grid-cols-3 gap-4 border-b border-gray-300">
+              <div className="p-4 grid sm:grid-cols-3 xl:grid-cols-4  gap-4 border-b border-[#dfe5ed]">
                 {rooms.map((room) => {
                   return(
-                    <div key={room._id} className="border border-gray-300 rounded-lg">
+                    <div key={room._id} className="border border-[#dfe5ed] rounded-lg">
                       <div className="relative flex items-center justify-center h-40 bg-gray-200 rounded-tl-lg rounded-tr-lg">
                         <DoorOpen size={40}/>
                         <div className="absolute top-2 right-2 flex items-center text-sm text-blue-400 border border-white pr-2 rounded-sm">
@@ -122,7 +122,7 @@ export default function RoomsPage() {
                           <UserRound size={16}/>
                           <span>Gabriel Concepcion</span>
                         </div>
-                        <button onClick={() => setIsViewDetailsModalOpen(true)} className="flex items-center justify-between w-full border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md cursor-pointer hover:border-gray-500">
+                        <button onClick={() => setIsViewDetailsModalOpen(true)} className="flex items-center justify-between w-full border border-[#dfe5ed] text-gray-700 px-3 py-1.5 rounded-md cursor-pointer hover:border-gray-500">
                           <span>View details</span>
                           <ArrowRight size={18}/>
                         </button>

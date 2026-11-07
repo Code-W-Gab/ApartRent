@@ -36,7 +36,7 @@ export default function sidebar(){
             const active = location.pathname === nav.to;
 
             return(
-              <Link to={nav.to} className={`text-gray-300 flex items-center gap-3 px-2.5 py-2.5 rounded-md hover:bg-gray-500 cursor-pointer ${active ? "bg-gray-500 text-white" : ""}`}>
+              <Link to={nav.to} key={nav.name} className={`text-gray-300 flex items-center gap-3 px-2.5 py-2.5 rounded-md hover:bg-gray-500 cursor-pointer ${active ? "bg-gray-500 text-white" : ""}`}>
                 <nav.icon size={20}/>
                 <span>{nav.name}</span>
               </Link>
