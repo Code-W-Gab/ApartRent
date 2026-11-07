@@ -1,5 +1,5 @@
 import api from "../api/axios";
-import type { ApiResponse, IRoom, createRoomDTO } from "../types/room.types";
+import type { ApiResponse, IRoom, createRoomDTO, updateRoomDTO } from "../types/room.types";
 
 export const createRoom = (
   roomData: createRoomDTO
@@ -7,3 +7,7 @@ export const createRoom = (
 
 export const getRoom = (
 ) => api.get<ApiResponse<IRoom[]>>('/api/room/get')
+
+export const updateRoom = (
+  id: string, roomData: updateRoomDTO
+) => api.put(`/api/room/${id}`, roomData)

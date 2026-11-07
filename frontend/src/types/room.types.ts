@@ -29,6 +29,8 @@ export interface IRoom {
 
 export type createRoomDTO = Omit<IRoom, "_id">
 
+export type updateRoomDTO = Partial<IRoom>
+
 export interface ApiResponse<T> {
   success: boolean,
   message: string,

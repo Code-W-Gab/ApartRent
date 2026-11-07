@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { createRoom, getRoom } from "../service/room.service"
-import type { IRoom, createRoomDTO } from "../types/room.types"
+import { createRoom, getRoom, updateRoom } from "../service/room.service"
+import type { IRoom, createRoomDTO, updateRoomDTO } from "../types/room.types"
 
 export const useRoom = () => {
   const [rooms, setRooms] = useState<IRoom[]>([]);
@@ -32,5 +32,19 @@ export const useRoom = () => {
     }
   }
 
-  return { handleCreateRoom, handleFetchRoom, rooms }
+  const handleUpdateRoom = async (
+    id: string, 
+    roomData: updateRoomDTO, 
+    onClose: () => void
+  ) => {
+    try {
+      await updateRoom(id, roomData)
+      await handleFetchRoom()
+      onClose()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  return { handleCreateRoom, handleFetchRoom, handleUpdateRoom, rooms }
 }
