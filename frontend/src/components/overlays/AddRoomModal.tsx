@@ -8,6 +8,7 @@ import { useRoom } from "../../hook/useRoom";
 
 interface ModalProps {
   onClose: () => void;
+  handleCreateRoom: ReturnType<typeof useRoom>["handleCreateRoom"];
 }
 
 interface DropdownOption<T> {
@@ -34,7 +35,7 @@ const statusTypeOptions: DropdownOption<status>[] = [
   { option: "Reserved", value: "Reserved" },
 ];
 
-export default function AddRoomModal({ onClose }: ModalProps) {
+export default function AddRoomModal({ onClose, handleCreateRoom }: ModalProps) {
   const [roomNumber, setRoomNumber] = useState("");
   const [floor, setFloor] = useState<floor>(1);
   const [type, setType] = useState<roomType>("Standard studio");
@@ -45,7 +46,6 @@ export default function AddRoomModal({ onClose }: ModalProps) {
   const [amenities, setAmenities] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
   const [photos, setPhotos] = useState<File[]>([]);
-  const { handleCreateRoom } = useRoom()
 
   const roomData = {
     roomNumber: Number(roomNumber),

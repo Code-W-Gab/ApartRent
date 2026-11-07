@@ -48,7 +48,12 @@ export default function RoomsPage() {
   const [isViewDetailsModalOpen, setIsViewDetailsModalOpen] = useState<boolean>(false)
   const [isAddRoomModalOpen, setIsAddRoomModalOpen] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<IRoom | null>(null);
-  const { rooms } = useRoom()
+  const {
+    rooms,
+    handleCreateRoom,
+    handleUpdateRoom,
+    handleDeleteRoom,
+  } = useRoom()
 
   return(
     <main>
@@ -149,16 +154,18 @@ export default function RoomsPage() {
             </div>
           </section>
 
-          {isViewDetailsModalOpen && (
+          {isViewDetailsModalOpen && selectedRoom && (
             <div className="fixed inset-0 flex bg-gray-800/50 items-center justify-center z-40">
               <div className="z-50">
-                <ViewDetailsModal 
-                  room={selectedRoom}
-                  onClose={() => {
-                    setIsViewDetailsModalOpen(false)
-                    setSelectedRoom(null)
-                  }}
-                />
+              <ViewDetailsModal
+                room={selectedRoom}
+                handleUpdateRoom={handleUpdateRoom}
+                handleDeleteRoom={handleDeleteRoom}
+                onClose={() => {
+                  setIsViewDetailsModalOpen(false)
+                  setSelectedRoom(null)
+                }}
+              />
               </div>
             </div>
           )}
@@ -166,7 +173,10 @@ export default function RoomsPage() {
           {isAddRoomModalOpen && (
             <div className="fixed inset-0 flex bg-gray-800/50 items-center justify-center z-40">
               <div className="z-50">
-                <AddRoomModal onClose={() => setIsAddRoomModalOpen(false)} />
+                <AddRoomModal
+                  handleCreateRoom={handleCreateRoom}
+                  onClose={() => setIsAddRoomModalOpen(false)}
+                />
               </div>
             </div>
           )}

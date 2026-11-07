@@ -7,8 +7,10 @@ import Checkbox from "../common/Checkbox";
 import { useRoom } from "../../hook/useRoom";
 
 interface ModalProps {
-  onClose: () => void
-  room: IRoom
+  onClose: () => void;
+  room: IRoom;
+  handleUpdateRoom: ReturnType<typeof useRoom>["handleUpdateRoom"];
+  handleDeleteRoom: ReturnType<typeof useRoom>["handleDeleteRoom"];
 }
 
 interface DropdownOption<T> {
@@ -36,7 +38,12 @@ const statusTypeOptions: DropdownOption<status>[] = [
   { option: "Reserved", value: "Reserved" },
 ];
 
-export default function ViewDetailsModal({onClose, room}: ModalProps){
+export default function ViewDetailsModal({
+  onClose,
+  room,
+  handleUpdateRoom,
+  handleDeleteRoom,
+}: ModalProps) {
   const [roomNumber, setRoomNumber] = useState("");
   const [floor, setFloor] = useState<floor>(1);
   const [type, setType] = useState<roomType>("Standard studio");
@@ -48,7 +55,6 @@ export default function ViewDetailsModal({onClose, room}: ModalProps){
   const [notes, setNotes] = useState("");
   const [photos, setPhotos] = useState<File[]>([]);
   const [isEdit, setIsEdit] = useState(false);
-  const { handleUpdateRoom, handleDeleteRoom } = useRoom();
 
   useEffect(() => {
     setRoomNumber(String(room.roomNumber));
