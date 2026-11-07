@@ -1,4 +1,4 @@
-import { Check, DoorOpen, Dot, X } from "lucide-react";
+import { Check, DoorOpen, Dot, Trash2, X } from "lucide-react";
 import type { floor, IRoom, roomType, status } from "../../types/room.types";
 import { useEffect, useState } from "react";
 import Input from "../common/Input";
@@ -48,7 +48,7 @@ export default function ViewDetailsModal({onClose, room}: ModalProps){
   const [notes, setNotes] = useState("");
   const [photos, setPhotos] = useState<File[]>([]);
   const [isEdit, setIsEdit] = useState(false);
-  const { handleUpdateRoom } = useRoom();
+  const { handleUpdateRoom, handleDeleteRoom } = useRoom();
 
   useEffect(() => {
     setRoomNumber(String(room.roomNumber));
@@ -246,6 +246,13 @@ export default function ViewDetailsModal({onClose, room}: ModalProps){
                     )
                   })}
                 </div>
+              </div>
+
+              <div className="flex items-center justify-end">
+                <button onClick={() => handleDeleteRoom(room._id, onClose)} className="flex items-center gap-2 border border-red-300 text-red-500 hover:border-red-400 cursor-pointer px-4 py-1.5 text-sm rounded-md">
+                  <Trash2 size={16}/>
+                  <span>Delete</span>
+                </button>
               </div>
             </div>
         }

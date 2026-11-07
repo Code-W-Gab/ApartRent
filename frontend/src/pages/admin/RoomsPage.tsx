@@ -88,7 +88,7 @@ export default function RoomsPage() {
               })}
             </div>
             
-            <div className="border border-[#dfe5ed] rounded-xl">
+            <div className="border border-[#dfe5ed] rounded-xl bg-white">
               <div className="p-4 flex items-center justify-between border-b border-[#dfe5ed]">
                 <div className="inline-flex items-center gap-2 w-70 border border-[#dfe5ed] px-3 py-2 rounded-lg">
                   <Search size={18} className="text-gray-500"/>

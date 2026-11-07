@@ -11,3 +11,7 @@ export const getRoom = (
 export const updateRoom = (
   id: string, roomData: updateRoomDTO
 ) => api.put(`/api/room/${id}`, roomData)
+
+export const deleteRoom = (
+  id: string
+) => api.delete(`/api/room/${id}`)

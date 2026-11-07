@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { createRoom, getRoom, updateRoom } from "../service/room.service"
+import { createRoom, deleteRoom, getRoom, updateRoom } from "../service/room.service"
 import type { IRoom, createRoomDTO, updateRoomDTO } from "../types/room.types"
 
 export const useRoom = () => {
@@ -46,5 +46,18 @@ export const useRoom = () => {
     }
   }
 
-  return { handleCreateRoom, handleFetchRoom, handleUpdateRoom, rooms }
+  const handleDeleteRoom = async (
+    id: string,
+    onClose: () => void
+  ) => {
+    try {
+      await deleteRoom(id)
+      await handleFetchRoom()
+      onClose()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  return { handleCreateRoom, handleFetchRoom, handleUpdateRoom, handleDeleteRoom, rooms }
 }
