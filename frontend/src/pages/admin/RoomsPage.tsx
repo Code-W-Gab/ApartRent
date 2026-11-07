@@ -6,6 +6,7 @@ import { useState } from "react"
 import ViewDetailsModal from "../../components/overlays/ViewDetailsModal"
 import AddRoomModal from "../../components/overlays/AddRoomModal"
 import { useRoom } from "../../hook/useRoom"
+import type { IRoom } from "../../types/room.types"
 
 interface INav {
   label: string,
@@ -46,6 +47,7 @@ const statusOptions: DropdownOption[] = [
 export default function RoomsPage() {
   const [isViewDetailsModalOpen, setIsViewDetailsModalOpen] = useState<boolean>(false)
   const [isAddRoomModalOpen, setIsAddRoomModalOpen] = useState<boolean>(false);
+  const [selectedRoom, setSelectedRoom] = useState<IRoom | null>(null);
   const { rooms } = useRoom()
 
   return(
@@ -122,7 +124,10 @@ export default function RoomsPage() {
                           <UserRound size={16}/>
                           <span>Gabriel Concepcion</span>
                         </div>
-                        <button onClick={() => setIsViewDetailsModalOpen(true)} className="flex items-center justify-between w-full border border-[#dfe5ed] text-gray-700 px-3 py-1.5 rounded-md cursor-pointer hover:border-gray-500">
+                        <button onClick={() => {
+                          setIsViewDetailsModalOpen(true)
+                          setSelectedRoom(room)
+                        }} className="flex items-center justify-between w-full border border-[#dfe5ed] text-gray-700 px-3 py-1.5 rounded-md cursor-pointer hover:border-gray-500">
                           <span>View details</span>
                           <ArrowRight size={18}/>
                         </button>
@@ -147,7 +152,13 @@ export default function RoomsPage() {
           {isViewDetailsModalOpen && (
             <div className="fixed inset-0 flex bg-gray-800/50 items-center justify-center z-40">
               <div className="z-50">
-                <ViewDetailsModal onClose={() => setIsViewDetailsModalOpen(false)}/>
+                <ViewDetailsModal 
+                  room={selectedRoom}
+                  onClose={() => {
+                    setIsViewDetailsModalOpen(false)
+                    setSelectedRoom(null)
+                  }}
+                />
               </div>
             </div>
           )}
@@ -155,7 +166,7 @@ export default function RoomsPage() {
           {isAddRoomModalOpen && (
             <div className="fixed inset-0 flex bg-gray-800/50 items-center justify-center z-40">
               <div className="z-50">
-                <AddRoomModal onClose={() => setIsAddRoomModalOpen(false)}/>
+                <AddRoomModal onClose={() => setIsAddRoomModalOpen(false)} />
               </div>
             </div>
           )}
