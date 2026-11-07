@@ -5,6 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import ViewDetailsModal from "../../components/overlays/ViewDetailsModal"
 import AddRoomModal from "../../components/overlays/AddRoomModal"
+import { useRoom } from "../../hook/useRoom"
 
 interface INav {
   label: string,
@@ -45,6 +46,7 @@ const statusOptions: DropdownOption[] = [
 export default function RoomsPage() {
   const [isViewDetailsModalOpen, setIsViewDetailsModalOpen] = useState<boolean>(false)
   const [isAddRoomModalOpen, setIsAddRoomModalOpen] = useState<boolean>(false);
+  const { rooms } = useRoom()
 
   return(
     <main>
@@ -98,32 +100,36 @@ export default function RoomsPage() {
               </div>
 
               <div className="p-4 grid grid-cols-3 gap-4 border-b border-gray-300">
-                <div className="border border-gray-300 rounded-lg">
-                  <div className="relative flex items-center justify-center h-40 bg-gray-200 rounded-tl-lg rounded-tr-lg">
-                    <DoorOpen size={40}/>
-                    <div className="absolute top-2 right-2 flex items-center text-sm text-blue-400 border border-white pr-2 rounded-sm">
-                      <Dot size={20}/>
-                      <span>Occupied</span>
+                {rooms.map((room) => {
+                  return(
+                    <div key={room._id} className="border border-gray-300 rounded-lg">
+                      <div className="relative flex items-center justify-center h-40 bg-gray-200 rounded-tl-lg rounded-tr-lg">
+                        <DoorOpen size={40}/>
+                        <div className="absolute top-2 right-2 flex items-center text-sm text-blue-400 border border-white pr-2 rounded-sm">
+                          <Dot size={20}/>
+                          <span>{room.status}</span>
+                        </div>
+                        <div className="absolute bottom-2 left-4 text-sm text-gray-500">{room.floor} / {room.roomNumber}</div>
+                      </div>
+                      <div className="p-4 space-y-3">
+                        <h1 className="text-lg font-medium">Room {room.roomNumber}</h1>
+                        <div className="text-sm text-gray-500">{room.type} - Floor {room.floor}</div>
+                        <div >
+                          <span className="text-2xl font-medium">₱{room.monthlyRent}</span>
+                          <span className="text-sm text-gray-500"> / month</span>
+                        </div> 
+                        <div className="flex items-center gap-2 text-gray-500 text-sm">
+                          <UserRound size={16}/>
+                          <span>Gabriel Concepcion</span>
+                        </div>
+                        <button onClick={() => setIsViewDetailsModalOpen(true)} className="flex items-center justify-between w-full border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md cursor-pointer hover:border-gray-500">
+                          <span>View details</span>
+                          <ArrowRight size={18}/>
+                        </button>
+                      </div>
                     </div>
-                    <div className="absolute bottom-2 left-4 text-sm text-gray-500">01 / 101</div>
-                  </div>
-                  <div className="p-4 space-y-3">
-                    <h1 className="text-lg font-medium">Room 101</h1>
-                    <div className="text-sm text-gray-500">Single room - Floor 1</div>
-                    <div >
-                      <span className="text-2xl font-medium">₱4,500</span>
-                      <span className="text-sm text-gray-500"> / month</span>
-                    </div> 
-                    <div className="flex items-center gap-2 text-gray-500 text-sm">
-                      <UserRound size={16}/>
-                      <span>Gabriel Concepcion</span>
-                    </div>
-                    <button onClick={() => setIsViewDetailsModalOpen(true)} className="flex items-center justify-between w-full border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md cursor-pointer hover:border-gray-500">
-                      <span>View details</span>
-                      <ArrowRight size={18}/>
-                    </button>
-                  </div>
-                </div>
+                  )
+                })}
               </div>
 
               <div className="p-4 flex items-center justify-between">
