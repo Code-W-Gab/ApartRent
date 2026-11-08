@@ -62,7 +62,32 @@ export const deleteRoom: RequestHandler<IdParams, {}, {}> = async (req, res) => 
 
 export const getRoom: RequestHandler = async (req, res) => {
   try {
-    const room = await roomSchema.find();
+    // search filter by room number
+    const roomNumberQuery = req.query.roomNumber;
+    const filter: { roomNumber?: number } = {};
+
+    if (roomNumberQuery !== undefined){
+      if(typeof roomNumberQuery !== "string" || roomNumberQuery.trim() === "") {
+        return res.status(400).json({
+          success: false,
+          message: "roomNumber must be a valid number"
+        });
+      }
+
+      const roomNumber = Number(roomNumberQuery);
+
+      if (!Number.isSafeInteger(roomNumber) || roomNumber <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: "roomNumber must be a positive integer",
+        });
+      }
+
+      filter.roomNumber = roomNumber;
+    }
+
+    // get all rooms
+    const room = await roomSchema.find(filter);
 
     res.status(200).json({
       success: true,

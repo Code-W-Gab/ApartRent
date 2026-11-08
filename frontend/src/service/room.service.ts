@@ -6,7 +6,8 @@ export const createRoom = (
 ) => api.post('/api/room/create', roomData)
 
 export const getRoom = (
-) => api.get<ApiResponse<IRoom[]>>('/api/room/get')
+  roomNumber?: number
+) => api.get<ApiResponse<IRoom[]>>('/api/room/get', { params: roomNumber ? { roomNumber } : {}})
 
 export const updateRoom = (
   id: string, roomData: updateRoomDTO

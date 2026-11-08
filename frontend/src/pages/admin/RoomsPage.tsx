@@ -48,12 +48,17 @@ export default function RoomsPage() {
   const [isViewDetailsModalOpen, setIsViewDetailsModalOpen] = useState<boolean>(false)
   const [isAddRoomModalOpen, setIsAddRoomModalOpen] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<IRoom | null>(null);
+  const [roomNumberSearch, setRoomNumberSearch] = useState(""); 
+  const searchValue = roomNumberSearch.trim();
+  const roomNumber = /^\d+$/.test(searchValue)
+    ? Number(searchValue)
+    : undefined;
   const {
     rooms,
     handleCreateRoom,
     handleUpdateRoom,
     handleDeleteRoom,
-  } = useRoom()
+  } = useRoom(roomNumber)
 
   return(
     <main>
@@ -97,7 +102,15 @@ export default function RoomsPage() {
               <div className="p-4 flex items-center justify-between border-b border-[#dfe5ed]">
                 <div className="inline-flex items-center gap-2 w-70 border border-[#dfe5ed] px-3 py-2 rounded-lg">
                   <Search size={18} className="text-gray-500"/>
-                  <input type="text" placeholder="Search room number..." className="text-sm focus:outline-none"/>
+                  <input 
+                    type="text" 
+                    min="1"
+                    step="1"
+                    placeholder="Search room number..." 
+                    value={roomNumberSearch}
+                    onChange={(e) => setRoomNumberSearch(e.target.value)}
+                    className="text-sm focus:outline-none"
+                  />
                 </div>
 
                 <div className="flex items-center gap-4">
