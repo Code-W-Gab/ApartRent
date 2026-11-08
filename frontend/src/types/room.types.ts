@@ -1,3 +1,14 @@
+import type React from "react"
+
+export interface INav {
+  label: string,
+  rooms: number,
+  desc: string,
+  icon: React.ElementType
+}
+
+export type activeFilter = | "grid" | "list"
+
 export type status = 
   | "Available"
   | "Occupied"

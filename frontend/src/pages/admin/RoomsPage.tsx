@@ -1,26 +1,11 @@
-import { ArrowRight, BuildingComplex, DoorOpen, Dot, Plus, Search, UserRound, UsersRound, Wrench, X } from "lucide-react"
+import { ArrowRight, ArrowUpRight, BuildingComplex, DoorOpen, Dot, LayoutGrid, List, Plus, Search, UserRound, UsersRound, Wrench, X } from "lucide-react"
 import AdminLayout from "../../components/layout/AdminLayout"
 import Dropdown from "../../components/common/dropdown"
-import type React from "react"
 import { useState } from "react"
 import ViewDetailsModal from "../../components/overlays/ViewDetailsModal"
 import AddRoomModal from "../../components/overlays/AddRoomModal"
 import { useRoom } from "../../hook/useRoom"
-import type { floor, IRoom, status } from "../../types/room.types"
-
-interface INav {
-  label: string,
-  rooms: number,
-  desc: string,
-  icon: React.ElementType
-}
-
-const navOption:INav[] = [
-  { label: "Total rooms", rooms: 18, desc: "Your entire property", icon: BuildingComplex },
-  { label: "Occupied", rooms: 14, desc: "A place to call home", icon: UsersRound },
-  { label: "Available", rooms: 3, desc: "Ready for move-in", icon: DoorOpen },
-  { label: "Under maintenance", rooms: 1, desc: "Getting a little attention", icon: Wrench }
-]
+import type { floor, IRoom, status, INav, activeFilter } from "../../types/room.types"
 
 interface DropdownOption<T extends string | number> {
   option: string;
@@ -49,6 +34,7 @@ export default function RoomsPage() {
   const [roomNumberSearch, setRoomNumberSearch] = useState(""); 
   const [statusFilter, setStatusFilter] = useState<status | "">("");
   const [floorFilter, setFloorFilter] = useState<floor | "">("");
+  const [isActiveFilter, setIsActiveFilter] = useState<activeFilter>("grid");
   const searchValue = roomNumberSearch.trim();
   const roomNumber = /^\d+$/.test(searchValue)
     ? Number(searchValue)
@@ -63,6 +49,14 @@ export default function RoomsPage() {
     statusFilter || undefined,
     floorFilter || undefined,
   );
+
+
+  const navOption:INav[] = [
+    { label: "Total rooms", rooms: rooms.length, desc: "Your entire property", icon: BuildingComplex },
+    { label: "Occupied", rooms: rooms.filter(room => room.status === "Occupied").length, desc: "A place to call home", icon: UsersRound },
+    { label: "Available", rooms: rooms.filter(room => room.status === "Available").length, desc: "Ready for move-in", icon: DoorOpen },
+    { label: "Under maintenance", rooms: 1, desc: "Getting a little attention", icon: Wrench }
+  ]
 
   const clearFilters = () => {
     setRoomNumberSearch("")
@@ -136,6 +130,15 @@ export default function RoomsPage() {
                     setValue={setFloorFilter}
                   />
 
+                  <div className="flex items-center gap-4 border border-[#dfe5ed] px-3 py-2 h-10 rounded-lg text-sm">
+                    <button onClick={() => setIsActiveFilter('grid')} className={`cursor-pointer ${isActiveFilter === "grid" ? "text-black" : "text-gray-500"}`}>
+                      <LayoutGrid size={18}/>
+                    </button>
+                    <button onClick={() => setIsActiveFilter('list')} className={`cursor-pointer ${isActiveFilter === "list" ? "text-black" : "text-gray-500"}`}>
+                      <List size={18}/>
+                    </button>
+                  </div>
+
                   { 
                     roomNumberSearch !== "" || statusFilter !== "" || floorFilter !== ""
                     ? <div className="border-l pl-3 border-[#dfe5ed]">
@@ -148,46 +151,91 @@ export default function RoomsPage() {
                   }
                 </div>
               </div>
-
-              <div className="p-4 grid sm:grid-cols-3 xl:grid-cols-4  gap-4 border-b border-[#dfe5ed]">
-                {
-                  rooms.length === 0 
-                  ? <div className="col-span-3 text-sm text-gray-500">No rooms found. Try a different room number or add a room.</div>
-                  : rooms.map((room) => {
-                    return(
-                      <div key={room._id} className="border border-[#dfe5ed] rounded-lg">
-                        <div className="relative flex items-center justify-center h-40 bg-gray-200 rounded-tl-lg rounded-tr-lg">
-                          <DoorOpen size={40}/>
-                          <div className="absolute top-2 right-2 flex items-center text-sm text-blue-400 border border-white pr-2 rounded-sm">
-                            <Dot size={20}/>
-                            <span>{room.status}</span>
+              
+              {/* GRID ROOMS */}
+              {
+              isActiveFilter === "grid"
+              ? <div className="p-4 grid grid-cols-3 2xl:grid-cols-4 gap-4 border-b border-[#dfe5ed]">
+                  {
+                    rooms.length === 0 
+                    ? <div className="col-span-3 text-sm text-gray-500">No rooms found. Try a different room number or add a room.</div>
+                    : rooms.map((room) => {
+                      return(
+                        <div key={room._id} className="border border-[#dfe5ed] rounded-lg">
+                          <div className="relative flex items-center justify-center h-40 bg-gray-200 rounded-tl-lg rounded-tr-lg">
+                            <DoorOpen size={40}/>
+                            <div className="absolute top-2 right-2 flex items-center text-sm text-blue-400 border border-white pr-2 rounded-sm">
+                              <Dot size={20}/>
+                              <span>{room.status}</span>
+                            </div>
+                            <div className="absolute bottom-2 left-4 text-sm text-gray-500">{room.floor} / {room.roomNumber}</div>
                           </div>
-                          <div className="absolute bottom-2 left-4 text-sm text-gray-500">{room.floor} / {room.roomNumber}</div>
+                          <div className="p-4 space-y-3">
+                            <h1 className="text-lg font-medium">Room {room.roomNumber}</h1>
+                            <div className="text-sm text-gray-500">{room.type} - Floor {room.floor}</div>
+                            <div >
+                              <span className="text-2xl font-medium">₱{room.monthlyRent}</span>
+                              <span className="text-sm text-gray-500"> / month</span>
+                            </div> 
+                            <div className="flex items-center gap-2 text-gray-500 text-sm">
+                              <UserRound size={16}/>
+                              <span>Gabriel Concepcion</span>
+                            </div>
+                            <button onClick={() => {
+                              setIsViewDetailsModalOpen(true)
+                              setSelectedRoom(room)
+                            }} className="flex items-center justify-between w-full border border-[#dfe5ed] text-gray-700 px-3 py-1.5 rounded-md cursor-pointer hover:border-gray-500">
+                              <span>View details</span>
+                              <ArrowRight size={18}/>
+                            </button>
+                          </div>
                         </div>
-                        <div className="p-4 space-y-3">
-                          <h1 className="text-lg font-medium">Room {room.roomNumber}</h1>
-                          <div className="text-sm text-gray-500">{room.type} - Floor {room.floor}</div>
-                          <div >
-                            <span className="text-2xl font-medium">₱{room.monthlyRent}</span>
-                            <span className="text-sm text-gray-500"> / month</span>
-                          </div> 
-                          <div className="flex items-center gap-2 text-gray-500 text-sm">
-                            <UserRound size={16}/>
-                            <span>Gabriel Concepcion</span>
+                      )
+                    })
+                  }
+                </div>
+              : <div className="border-b border-[#dfe5ed]">
+                  <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,0.8fr)] *:min-w-0 *:wrap-anywhere] items-center gap-4 p-4 text-sm bg-[#F6F8FB] text-gray-500 ">
+                    <span>Room</span>
+                    <span>Type</span>
+                    <span>Monthly rent</span>
+                    <span>Tenant</span>
+                    <span>Status</span>
+                    <span>Action</span>
+                  </div>
+
+                  {
+                    rooms.length === 0 
+                    ? <div className="col-span-3 text-sm text-gray-500 p-4">No rooms found. Try a different room number or add a room.</div>
+                    : rooms.map((room) => {
+                      return(
+                        <div key={room._id} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,0.8fr)] *:min-w-0 *:wrap-anywhere] items-center gap-4 px-4 py-3 text-sm text-gray-500">
+                          <span className="text-gray-600 font-medium">Room {room.roomNumber}</span>
+                          <span>{room.type}</span>
+                          <span>₱{room.monthlyRent}</span>
+                          <span>Gabriel Concepcion</span>
+                          <div>
+                            <div className="inline-flex max-w-full flex-wrap items-center bg-blue-100 rounded-md px-2 [&>svg]:shrink-0">
+                              <Dot size={24}/>
+                              <span className="text-xs">{room.status}</span>
+                            </div>
                           </div>
-                          <button onClick={() => {
-                            setIsViewDetailsModalOpen(true)
-                            setSelectedRoom(room)
-                          }} className="flex items-center justify-between w-full border border-[#dfe5ed] text-gray-700 px-3 py-1.5 rounded-md cursor-pointer hover:border-gray-500">
-                            <span>View details</span>
-                            <ArrowRight size={18}/>
+                          <button 
+                            onClick={() => {
+                              setIsViewDetailsModalOpen(true)
+                              setSelectedRoom(room)
+                            }} 
+                            className="flex flex-wrap items-center gap-1.5 hover:underline hover:text-gray-700 cursor-pointer"
+                          >
+                            <span>Details</span>
+                            <ArrowUpRight size={16}/>
                           </button>
                         </div>
-                      </div>
-                    )
-                  })
-                }
-              </div>
+                      )
+                    })
+                  }
+                </div>
+              }
 
               <div className="p-4 flex items-center justify-between">
                 <div className="text-sm text-gray-500">Showing 1-9 of 18 records</div>

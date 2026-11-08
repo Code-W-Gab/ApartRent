@@ -23,7 +23,7 @@ export const useRoom = (
   }, [roomNumber, statusFilter, floorFilter]);
 
   useEffect(() => {
-    void handleFetchRoom();
+    void handleFetchRoom(); 
   }, [handleFetchRoom]);
 
   const handleCreateRoom = async (
