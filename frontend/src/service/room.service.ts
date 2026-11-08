@@ -1,13 +1,13 @@
 import api from "../api/axios";
-import type { ApiResponse, IRoom, createRoomDTO, updateRoomDTO } from "../types/room.types";
+import type { ApiResponse, IRoom, RoomFilters, createRoomDTO, updateRoomDTO } from "../types/room.types";
 
 export const createRoom = (
   roomData: createRoomDTO
 ) => api.post('/api/room/create', roomData)
 
 export const getRoom = (
-  roomNumber?: number
-) => api.get<ApiResponse<IRoom[]>>('/api/room/get', { params: roomNumber ? { roomNumber } : {}})
+  filters: RoomFilters = {}
+) => api.get<ApiResponse<IRoom[]>>('/api/room/get', { params: filters })
 
 export const updateRoom = (
   id: string, roomData: updateRoomDTO

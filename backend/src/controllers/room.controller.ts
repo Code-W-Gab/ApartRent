@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { createRoomDTO, IdParams, updateRoomDto } from "../types/room.types";
+import { createRoomDTO, IdParams, IRoom, updateRoomDto } from "../types/room.types";
 import roomSchema from "../models/room.schema";
 
 export const createRoom: RequestHandler<{}, {}, createRoomDTO> = async (req, res) => {
@@ -64,7 +64,11 @@ export const getRoom: RequestHandler = async (req, res) => {
   try {
     // search filter by room number
     const roomNumberQuery = req.query.roomNumber;
-    const filter: { roomNumber?: number } = {};
+    const filter: { 
+      roomNumber?: number 
+      status?: IRoom['status']
+      floor?: IRoom['floor']
+    } = {};
 
     if (roomNumberQuery !== undefined){
       if(typeof roomNumberQuery !== "string" || roomNumberQuery.trim() === "") {
@@ -84,6 +88,47 @@ export const getRoom: RequestHandler = async (req, res) => {
       }
 
       filter.roomNumber = roomNumber;
+    }
+
+    const statusQuery = req.query.status;
+    if (statusQuery !== undefined) {
+      const validStatuses: IRoom["status"][] = [
+        "Available",
+        "Occupied",
+        "Reserved",
+      ];
+
+      const matchedStatus =
+        typeof statusQuery === "string"
+          ? validStatuses.find((status) => status === statusQuery)
+          : undefined;
+
+      if (!matchedStatus) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid status",
+        });
+      }
+
+      filter.status = matchedStatus;
+    }
+
+    const floorQuery = req.query.floor;
+    if (floorQuery !== undefined) {
+      const floorNumber =
+        typeof floorQuery === "string" ? Number(floorQuery) : NaN;
+      const validFloor = ([1, 2, 3, 4] as const).find(
+        (floor) => floor === floorNumber,
+      );
+
+      if (!validFloor) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid floor",
+        });
+      }
+
+      filter.floor = validFloor;
     }
 
     // get all rooms

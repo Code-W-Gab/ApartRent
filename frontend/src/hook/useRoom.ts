@@ -1,18 +1,26 @@
 import { useCallback, useEffect, useState } from "react"
 import { createRoom, deleteRoom, getRoom, updateRoom } from "../service/room.service"
-import type { IRoom, createRoomDTO, updateRoomDTO } from "../types/room.types"
+import type { IRoom, createRoomDTO, floor, status, updateRoomDTO } from "../types/room.types"
 
-export const useRoom = (roomNumber?: number) => {
+export const useRoom = (
+  roomNumber?: number,
+  statusFilter?: status,
+  floorFilter?: floor
+) => {
   const [rooms, setRooms] = useState<IRoom[]>([]);
 
   const handleFetchRoom = useCallback(async () => {
     try {
-      const res = await getRoom(roomNumber);
+      const res = await getRoom({
+        roomNumber,
+        status: statusFilter,
+        floor: floorFilter,
+      });
       setRooms(res.data.data ?? []);
     } catch (error) {
       console.error("Failed to fetch rooms:", error);
     }
-  }, [roomNumber]);
+  }, [roomNumber, statusFilter, floorFilter]);
 
   useEffect(() => {
     void handleFetchRoom();

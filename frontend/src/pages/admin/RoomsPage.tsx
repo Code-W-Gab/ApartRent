@@ -1,4 +1,4 @@
-import { ArrowRight, BuildingComplex, DoorOpen, Dot, Plus, Search, UserRound, UsersRound, Wrench } from "lucide-react"
+import { ArrowRight, BuildingComplex, DoorOpen, Dot, Plus, Search, UserRound, UsersRound, Wrench, X } from "lucide-react"
 import AdminLayout from "../../components/layout/AdminLayout"
 import Dropdown from "../../components/common/dropdown"
 import type React from "react"
@@ -6,7 +6,7 @@ import { useState } from "react"
 import ViewDetailsModal from "../../components/overlays/ViewDetailsModal"
 import AddRoomModal from "../../components/overlays/AddRoomModal"
 import { useRoom } from "../../hook/useRoom"
-import type { IRoom } from "../../types/room.types"
+import type { floor, IRoom, status } from "../../types/room.types"
 
 interface INav {
   label: string,
@@ -22,33 +22,33 @@ const navOption:INav[] = [
   { label: "Under maintenance", rooms: 1, desc: "Getting a little attention", icon: Wrench }
 ]
 
-interface DropdownOption {
-  option: string,
-  value: string
+interface DropdownOption<T extends string | number> {
+  option: string;
+  value: T;
 }
 
-const floorOptions: DropdownOption[] = [
+const floorOptions: DropdownOption<floor | "">[] = [
   { option: "All floors", value: "" },
-  { option: "floor 1", value: "" },
-  { option: "floor 2", value: "" },
-  { option: "floor 3", value: "" },
-  { option: "floor 4", value: "" },
-]
+  { option: "Floor 1", value: 1 },
+  { option: "Floor 2", value: 2 },
+  { option: "Floor 3", value: 3 },
+  { option: "Floor 4", value: 4 },
+];
 
-const statusOptions: DropdownOption[] = [
+const statusOptions: DropdownOption<status | "">[] = [
   { option: "All statuses", value: "" },
-  { option: "Available", value: "" },
-  { option: "Occupied", value: "" },
-  { option: "Reserved", value: "" },
-  { option: "Maintenance", value: "" },
-]
-
+  { option: "Available", value: "Available" },
+  { option: "Occupied", value: "Occupied" },
+  { option: "Reserved", value: "Reserved" },
+];
 
 export default function RoomsPage() {
   const [isViewDetailsModalOpen, setIsViewDetailsModalOpen] = useState<boolean>(false)
   const [isAddRoomModalOpen, setIsAddRoomModalOpen] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<IRoom | null>(null);
   const [roomNumberSearch, setRoomNumberSearch] = useState(""); 
+  const [statusFilter, setStatusFilter] = useState<status | "">("");
+  const [floorFilter, setFloorFilter] = useState<floor | "">("");
   const searchValue = roomNumberSearch.trim();
   const roomNumber = /^\d+$/.test(searchValue)
     ? Number(searchValue)
@@ -58,7 +58,17 @@ export default function RoomsPage() {
     handleCreateRoom,
     handleUpdateRoom,
     handleDeleteRoom,
-  } = useRoom(roomNumber)
+  } = useRoom(
+    roomNumber,
+    statusFilter || undefined,
+    floorFilter || undefined,
+  );
+
+  const clearFilters = () => {
+    setRoomNumberSearch("")
+    setFloorFilter("")
+    setStatusFilter("")
+  }
 
   return(
     <main>
@@ -109,50 +119,74 @@ export default function RoomsPage() {
                     placeholder="Search room number..." 
                     value={roomNumberSearch}
                     onChange={(e) => setRoomNumberSearch(e.target.value)}
-                    className="text-sm focus:outline-none"
+                    className="text-sm focus:outline-none text-gray-600 w-full"
                   />
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <Dropdown dropdownOptions={statusOptions}/>
-                  <Dropdown dropdownOptions={floorOptions}/>
+                  <Dropdown
+                    dropdownOptions={statusOptions}
+                    value={statusFilter}
+                    setValue={setStatusFilter}
+                  />
+
+                  <Dropdown
+                    dropdownOptions={floorOptions}
+                    value={floorFilter}
+                    setValue={setFloorFilter}
+                  />
+
+                  { 
+                    roomNumberSearch !== "" || statusFilter !== "" || floorFilter !== ""
+                    ? <div className="border-l pl-3 border-[#dfe5ed]">
+                        <button onClick={() => clearFilters()} className="flex items-center gap-1 text-sm px-2 py-2 rounded-lg text-white bg-blue-500 cursor-pointer hover:bg-blue-400">
+                          <X size={16}/>
+                          <span>Clear Filters</span>
+                        </button>
+                      </div>
+                    : ""
+                  }
                 </div>
               </div>
 
               <div className="p-4 grid sm:grid-cols-3 xl:grid-cols-4  gap-4 border-b border-[#dfe5ed]">
-                {rooms.map((room) => {
-                  return(
-                    <div key={room._id} className="border border-[#dfe5ed] rounded-lg">
-                      <div className="relative flex items-center justify-center h-40 bg-gray-200 rounded-tl-lg rounded-tr-lg">
-                        <DoorOpen size={40}/>
-                        <div className="absolute top-2 right-2 flex items-center text-sm text-blue-400 border border-white pr-2 rounded-sm">
-                          <Dot size={20}/>
-                          <span>{room.status}</span>
+                {
+                  rooms.length === 0 
+                  ? <div className="col-span-3 text-sm text-gray-500">No rooms found. Try a different room number or add a room.</div>
+                  : rooms.map((room) => {
+                    return(
+                      <div key={room._id} className="border border-[#dfe5ed] rounded-lg">
+                        <div className="relative flex items-center justify-center h-40 bg-gray-200 rounded-tl-lg rounded-tr-lg">
+                          <DoorOpen size={40}/>
+                          <div className="absolute top-2 right-2 flex items-center text-sm text-blue-400 border border-white pr-2 rounded-sm">
+                            <Dot size={20}/>
+                            <span>{room.status}</span>
+                          </div>
+                          <div className="absolute bottom-2 left-4 text-sm text-gray-500">{room.floor} / {room.roomNumber}</div>
                         </div>
-                        <div className="absolute bottom-2 left-4 text-sm text-gray-500">{room.floor} / {room.roomNumber}</div>
-                      </div>
-                      <div className="p-4 space-y-3">
-                        <h1 className="text-lg font-medium">Room {room.roomNumber}</h1>
-                        <div className="text-sm text-gray-500">{room.type} - Floor {room.floor}</div>
-                        <div >
-                          <span className="text-2xl font-medium">₱{room.monthlyRent}</span>
-                          <span className="text-sm text-gray-500"> / month</span>
-                        </div> 
-                        <div className="flex items-center gap-2 text-gray-500 text-sm">
-                          <UserRound size={16}/>
-                          <span>Gabriel Concepcion</span>
+                        <div className="p-4 space-y-3">
+                          <h1 className="text-lg font-medium">Room {room.roomNumber}</h1>
+                          <div className="text-sm text-gray-500">{room.type} - Floor {room.floor}</div>
+                          <div >
+                            <span className="text-2xl font-medium">₱{room.monthlyRent}</span>
+                            <span className="text-sm text-gray-500"> / month</span>
+                          </div> 
+                          <div className="flex items-center gap-2 text-gray-500 text-sm">
+                            <UserRound size={16}/>
+                            <span>Gabriel Concepcion</span>
+                          </div>
+                          <button onClick={() => {
+                            setIsViewDetailsModalOpen(true)
+                            setSelectedRoom(room)
+                          }} className="flex items-center justify-between w-full border border-[#dfe5ed] text-gray-700 px-3 py-1.5 rounded-md cursor-pointer hover:border-gray-500">
+                            <span>View details</span>
+                            <ArrowRight size={18}/>
+                          </button>
                         </div>
-                        <button onClick={() => {
-                          setIsViewDetailsModalOpen(true)
-                          setSelectedRoom(room)
-                        }} className="flex items-center justify-between w-full border border-[#dfe5ed] text-gray-700 px-3 py-1.5 rounded-md cursor-pointer hover:border-gray-500">
-                          <span>View details</span>
-                          <ArrowRight size={18}/>
-                        </button>
                       </div>
-                    </div>
-                  )
-                })}
+                    )
+                  })
+                }
               </div>
 
               <div className="p-4 flex items-center justify-between">

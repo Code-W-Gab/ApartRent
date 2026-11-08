@@ -27,6 +27,17 @@ export interface IRoom {
   notes?: string
 }
 
+export type RoomFilters = {
+  roomNumber?: number;
+  status?: status;
+  floor?: floor;
+};
+
+export const getRoom = (filters: RoomFilters = {}) =>
+  api.get<ApiResponse<IRoom[]>>("/api/room/get", {
+    params: filters,
+  });
+
 export type createRoomDTO = Omit<IRoom, "_id">
 
 export type updateRoomDTO = Partial<IRoom>
