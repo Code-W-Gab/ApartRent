@@ -44,11 +44,6 @@ export type RoomFilters = {
   floor?: floor;
 };
 
-export const getRoom = (filters: RoomFilters = {}) =>
-  api.get<ApiResponse<IRoom[]>>("/api/room/get", {
-    params: filters,
-  });
-
 export type createRoomDTO = Omit<IRoom, "_id">
 
 export type updateRoomDTO = Partial<IRoom>

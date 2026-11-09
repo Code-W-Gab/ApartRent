@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, BuildingComplex, DoorOpen, Dot, LayoutGrid, List, Plus, Search, UserRound, UsersRound, Wrench, X } from "lucide-react"
+import { ArrowRight, ArrowUpRight, BuildingComplex, DoorOpen, LayoutGrid, List, Plus, Search, UserRound, UsersRound, Wrench, X } from "lucide-react"
 import AdminLayout from "../../components/layout/AdminLayout"
 import Dropdown from "../../components/common/dropdown"
 import { useState } from "react"
@@ -6,6 +6,7 @@ import ViewDetailsModal from "../../components/overlays/ViewDetailsModal"
 import AddRoomModal from "../../components/overlays/AddRoomModal"
 import { useRoom } from "../../hook/useRoom"
 import type { floor, IRoom, status, INav, activeFilter } from "../../types/room.types"
+import Status from "../../components/common/Status"
 
 interface DropdownOption<T extends string | number> {
   option: string;
@@ -35,6 +36,8 @@ export default function RoomsPage() {
   const [statusFilter, setStatusFilter] = useState<status | "">("");
   const [floorFilter, setFloorFilter] = useState<floor | "">("");
   const [isActiveFilter, setIsActiveFilter] = useState<activeFilter>("grid");
+  const [page, setPage] = useState(1);
+  const pageSize = 9;
   const searchValue = roomNumberSearch.trim();
   const roomNumber = /^\d+$/.test(searchValue)
     ? Number(searchValue)
@@ -50,6 +53,18 @@ export default function RoomsPage() {
     floorFilter || undefined,
   );
 
+  const totalRooms = rooms.length;
+  const totalPages = Math.max(1, Math.ceil(totalRooms / pageSize));
+
+  // Keep the displayed page valid when rooms are deleted.
+  const currentPage = Math.min(page, totalPages);
+  const startIndex = (currentPage - 1) * pageSize;
+
+  const paginatedRooms = rooms.slice(startIndex, startIndex + pageSize);
+
+  const firstRecord = totalRooms === 0 ? 0 : startIndex + 1;
+  const lastRecord = Math.min(startIndex + pageSize, totalRooms);
+
 
   const navOption:INav[] = [
     { label: "Total rooms", rooms: rooms.length, desc: "Your entire property", icon: BuildingComplex },
@@ -62,6 +77,7 @@ export default function RoomsPage() {
     setRoomNumberSearch("")
     setFloorFilter("")
     setStatusFilter("")
+    setPage(1)
   }
 
   return(
@@ -112,7 +128,10 @@ export default function RoomsPage() {
                     step="1"
                     placeholder="Search room number..." 
                     value={roomNumberSearch}
-                    onChange={(e) => setRoomNumberSearch(e.target.value)}
+                    onChange={(e) => {
+                      setRoomNumberSearch(e.target.value);
+                      setPage(1)
+                    }}
                     className="text-sm focus:outline-none text-gray-600 w-full"
                   />
                 </div>
@@ -121,13 +140,19 @@ export default function RoomsPage() {
                   <Dropdown
                     dropdownOptions={statusOptions}
                     value={statusFilter}
-                    setValue={setStatusFilter}
+                    setValue={(value) => {
+                      setStatusFilter(value);
+                      setPage(1)
+                    }}
                   />
 
                   <Dropdown
                     dropdownOptions={floorOptions}
                     value={floorFilter}
-                    setValue={setFloorFilter}
+                    setValue={(value) => {
+                      setFloorFilter(value);
+                      setPage(1);
+                    }}
                   />
 
                   <div className="flex items-center gap-4 border border-[#dfe5ed] px-3 py-2 h-10 rounded-lg text-sm">
@@ -159,15 +184,12 @@ export default function RoomsPage() {
                   {
                     rooms.length === 0 
                     ? <div className="col-span-3 text-sm text-gray-500">No rooms found. Try a different room number or add a room.</div>
-                    : rooms.map((room) => {
+                    : paginatedRooms.map((room) => {
                       return(
                         <div key={room._id} className="border border-[#dfe5ed] rounded-lg">
                           <div className="relative flex items-center justify-center h-40 bg-gray-200 rounded-tl-lg rounded-tr-lg">
                             <DoorOpen size={40}/>
-                            <div className="absolute top-2 right-2 flex items-center text-sm text-blue-400 border border-white pr-2 rounded-sm">
-                              <Dot size={20}/>
-                              <span>{room.status}</span>
-                            </div>
+                            <Status status={room.status} filterType={isActiveFilter}/>
                             <div className="absolute bottom-2 left-4 text-sm text-gray-500">{room.floor} / {room.roomNumber}</div>
                           </div>
                           <div className="p-4 space-y-3">
@@ -207,7 +229,7 @@ export default function RoomsPage() {
                   {
                     rooms.length === 0 
                     ? <div className="col-span-3 text-sm text-gray-500 p-4">No rooms found. Try a different room number or add a room.</div>
-                    : rooms.map((room) => {
+                    : paginatedRooms.map((room) => {
                       return(
                         <div key={room._id} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,0.8fr)] *:min-w-0 *:wrap-anywhere] items-center gap-4 px-4 py-3 text-sm text-gray-500">
                           <span className="text-gray-600 font-medium">Room {room.roomNumber}</span>
@@ -215,10 +237,7 @@ export default function RoomsPage() {
                           <span>₱{room.monthlyRent}</span>
                           <span>Gabriel Concepcion</span>
                           <div>
-                            <div className="inline-flex max-w-full flex-wrap items-center bg-blue-100 rounded-md px-2 [&>svg]:shrink-0">
-                              <Dot size={24}/>
-                              <span className="text-xs">{room.status}</span>
-                            </div>
+                            <Status status={room.status} filterType={isActiveFilter}/>
                           </div>
                           <button 
                             onClick={() => {
@@ -237,13 +256,40 @@ export default function RoomsPage() {
                 </div>
               }
 
-              <div className="p-4 flex items-center justify-between">
-                <div className="text-sm text-gray-500">Showing 1-9 of 18 records</div>
-                <div className="flex items-center gap-3">
-                  <button className="border border-gray-300 text-gray-500 px-3 py-1.5 rounded-md text-sm cursor-pointer  hover:border-gray-500">Previous</button>
-                  <button className="border border-gray-300 text-gray-500 px-3 py-1.5 rounded-md text-sm">1</button>
-                  <button className="border border-gray-300 text-gray-500 px-3 py-1.5 rounded-md text-sm cursor-pointer hover:border-gray-500">Next</button>
+              <div className="p-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="text-sm text-gray-500" aria-live="polite">
+                  Showing {firstRecord}–{lastRecord} of {totalRooms} records
                 </div>
+
+                <nav aria-label="Rooms pagination" className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    disabled={currentPage === 1}
+                    onClick={() => setPage(Math.max(1, currentPage - 1))}
+                    className="border border-gray-300 text-gray-500 px-3 py-1.5
+                              rounded-md text-sm enabled:cursor-pointer
+                              enabled:hover:border-gray-500 disabled:opacity-40
+                              disabled:cursor-not-allowed"
+                  >
+                    Previous
+                  </button>
+
+                  <span className="text-sm text-gray-600">
+                    Page {currentPage} of {totalPages}
+                  </span>
+
+                  <button
+                    type="button"
+                    disabled={currentPage === totalPages}
+                    onClick={() => setPage(Math.min(totalPages, currentPage + 1))}
+                    className="border border-gray-300 text-gray-500 px-3 py-1.5
+                              rounded-md text-sm enabled:cursor-pointer
+                              enabled:hover:border-gray-500 disabled:opacity-40
+                              disabled:cursor-not-allowed"
+                  >
+                    Next
+                  </button>
+                </nav>
               </div>
 
             </div>
