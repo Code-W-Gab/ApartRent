@@ -217,7 +217,7 @@ export default function RoomsPage() {
                   }
                 </div>
               : <div className="border-b border-[#dfe5ed]">
-                  <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,0.8fr)] *:min-w-0 *:wrap-anywhere] items-center gap-4 p-4 text-sm bg-[#F6F8FB] text-gray-500 ">
+                  <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,0.8fr)] *:min-w-0 *:wrap-anywhere items-center gap-4 p-4 text-sm bg-[#F6F8FB] text-gray-500 ">
                     <span>Room</span>
                     <span>Type</span>
                     <span>Monthly rent</span>
