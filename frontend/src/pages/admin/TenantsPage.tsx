@@ -4,6 +4,7 @@ import type { DropdownOption, INav, tenantStatus } from "../../types/tenant.type
 import Dropdown from "../../components/common/dropdown"
 import { useState } from "react"
 import AddTenantModal from "../../components/overlays/AddTenantModal"
+import { useTenant } from "../../hook/useTenant"
 
 
 const navOption:INav[] = [
@@ -24,6 +25,7 @@ const tenantsOptions: DropdownOption<tenantStatus | "">[] = [
 
 export default function TenantsPage() {
   const [addTenantModal, setAddTenantModal] = useState(false);
+  const { tenants } = useTenant();
 
   return(
     <main>
@@ -89,23 +91,31 @@ export default function TenantsPage() {
                     <span>Action</span>
                   </div>
 
-                  <div className="grid grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.8fr)] *:min-w-0 *:wrap-anywhere items-center gap-4 p-4 text-sm text-gray-500 ">
-                    <div className="flex flex-col">
-                      <span className="text-gray-600 font-medium">Gabriel Concepcion</span>
-                      <span className="text-xs">Gab@gmail.com</span>
-                    </div>
-                    <span>101</span>
-                    <span>Mar 31, 2026</span>
-                    <span>₱4,000</span>
-                    <span>₱0</span>
-                    <span>Active</span>
-                    <button 
-                      className="flex flex-wrap items-center gap-1.5 hover:underline hover:text-gray-700 cursor-pointer"
-                    >
-                      <span>View</span>
-                      <ArrowUpRight size={16}/>
-                    </button>
-                  </div>
+                  {
+                  tenants.length === 0 
+                    ? <div className="col-span-3 text-sm text-gray-500 p-4">No tenant found. Try a different tenant name or add a tenant.</div>
+                    : tenants.map(tenant => {
+                      return(
+                        <div key={tenant._id} className="grid grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.8fr)] *:min-w-0 *:wrap-anywhere items-center gap-4 p-4 text-sm text-gray-500 ">
+                          <div className="flex flex-col">
+                            <span className="text-gray-600 font-medium">{tenant.fullName}</span>
+                            <span className="text-xs">{tenant.emailAddress}</span>
+                          </div>
+                          <span>101</span>
+                          <span>Mar 31, 2026</span>
+                          <span>₱4,000</span>
+                          <span>₱0</span>
+                          <span>Active</span>
+                          <button 
+                            className="flex flex-wrap items-center gap-1.5 hover:underline hover:text-gray-700 cursor-pointer"
+                          >
+                            <span>View</span>
+                            <ArrowUpRight size={16}/>
+                          </button>
+                        </div>
+                      )
+                    })
+                  }
                 </div>
 
                 <div className="p-4 text-sm text-gray-500">14 tenants</div>

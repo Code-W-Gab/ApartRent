@@ -15,3 +15,21 @@ export type tenantStatus =
   | "Pending"
   | "EndingSoon"
   | "MovedOut"
+
+
+export interface ITenant {
+  _id: string,
+  fullName: string,
+  emailAddress: string,
+  phoneNumber: string,
+  emergencyContactName: string,
+  relationship: string,
+  emergencyContactNumber: string
+}
+
+export interface ApiResponse<T> {
+  success: boolean,
+  message: string,
+  data: T
+}
+  
