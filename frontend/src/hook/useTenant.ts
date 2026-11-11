@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import type { ITenant } from "../types/tenant.types"
-import { getTenant } from "../service/tenant.service";
+import type { createTenantDTO, ITenant } from "../types/tenant.types"
+import { createTenant, getTenant } from "../service/tenant.service";
 
 export const useTenant = () => {
   const [tenants, setTenants] = useState<ITenant[]>([]);
@@ -18,5 +18,18 @@ export const useTenant = () => {
     handleFetchTenants();
   }, []);
 
-  return { handleFetchTenants, tenants }
+  const handleCreateTenant = async (
+    tenantData: createTenantDTO,
+    onClose: () => void
+  ) => {
+    try {
+      await createTenant(tenantData);
+      await handleFetchTenants();
+      onClose()
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  return { handleFetchTenants, handleCreateTenant, tenants }
 }

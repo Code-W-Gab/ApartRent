@@ -25,7 +25,7 @@ const tenantsOptions: DropdownOption<tenantStatus | "">[] = [
 
 export default function TenantsPage() {
   const [addTenantModal, setAddTenantModal] = useState(false);
-  const { tenants } = useTenant();
+  const { tenants, handleCreateTenant } = useTenant();
 
   return(
     <main>
@@ -127,6 +127,7 @@ export default function TenantsPage() {
                 <div className="z-50">
                   <AddTenantModal
                     onClose={() => setAddTenantModal(false)}
+                    handleCreateRoom={handleCreateTenant}
                   />
                 </div>
               </div>

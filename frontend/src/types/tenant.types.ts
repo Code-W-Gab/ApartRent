@@ -27,6 +27,8 @@ export interface ITenant {
   emergencyContactNumber: string
 }
 
+export type createTenantDTO = Omit<ITenant, "_id">;
+
 export interface ApiResponse<T> {
   success: boolean,
   message: string,
