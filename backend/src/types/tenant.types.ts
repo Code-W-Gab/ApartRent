@@ -8,3 +8,9 @@ export interface ITenant {
 }
 
 export type createTenantDTO = ITenant;
+
+export type updateTenantDTO = Partial<ITenant>;
+
+export interface IdParams {
+  id: string
+}
