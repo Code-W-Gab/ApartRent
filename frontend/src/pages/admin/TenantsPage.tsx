@@ -2,6 +2,8 @@ import { ArrowUpRight, DoorOpen, FileText, Mail, Plus, Search, UsersRound } from
 import AdminLayout from "../../components/layout/AdminLayout"
 import type { DropdownOption, INav, tenantStatus } from "../../types/tenant.types"
 import Dropdown from "../../components/common/dropdown"
+import { useState } from "react"
+import AddTenantModal from "../../components/overlays/AddTenantModal"
 
 
 const navOption:INav[] = [
@@ -21,6 +23,8 @@ const tenantsOptions: DropdownOption<tenantStatus | "">[] = [
 ];
 
 export default function TenantsPage() {
+  const [addTenantModal, setAddTenantModal] = useState(false);
+
   return(
     <main>
       <AdminLayout>
@@ -32,7 +36,7 @@ export default function TenantsPage() {
                   <h1 className="text-3xl font-semibold text-[#243E59]">Tenants</h1>
                 </div>
                 <div>
-                  <button className="flex items-center gap-2 px-4 py-3 rounded-md text-white bg-[#243E59]">
+                  <button onClick={() => setAddTenantModal(true)} className="flex items-center gap-2 px-4 py-3 rounded-md text-white bg-[#243E59] cursor-pointer">
                     <Plus size={18}/>
                     <span className="text-sm">Add tenant</span>
                   </button>
@@ -107,6 +111,16 @@ export default function TenantsPage() {
                 <div className="p-4 text-sm text-gray-500">14 tenants</div>
               </div>
             </section>
+
+            {addTenantModal && (
+              <div className="fixed inset-0 flex bg-gray-800/50 items-center justify-center z-40">
+                <div className="z-50">
+                  <AddTenantModal
+                    onClose={() => setAddTenantModal(false)}
+                  />
+                </div>
+              </div>
+            )}
         </div>
       </AdminLayout>
     </main>
