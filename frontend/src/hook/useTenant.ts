@@ -1,9 +1,27 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import type { createTenantDTO, ITenant } from "../types/tenant.types"
 import { createTenant, getTenant } from "../service/tenant.service";
 
-export const useTenant = () => {
+export const useTenant = (
+  fullName?: string
+) => {
   const [tenants, setTenants] = useState<ITenant[]>([]);
+  const [filterTenants, setFilterTenants] = useState<ITenant[]>([]);
+
+  const handleFilterTenants = useCallback(async () => {
+    try {
+      const res = await getTenant({
+        fullName
+      })
+      setFilterTenants(res.data.data ?? []);
+    } catch (error) {
+      console.error("Failed to fetch tenants:", error);
+    }
+  }, [fullName])
+
+  useEffect(() => {
+    void handleFilterTenants();
+  }, [handleFilterTenants])
 
   const handleFetchTenants = async () => {
     try {
@@ -31,5 +49,5 @@ export const useTenant = () => {
     }
   }
 
-  return { handleFetchTenants, handleCreateTenant, tenants }
+  return { handleFetchTenants, handleCreateTenant, tenants, filterTenants }
 }

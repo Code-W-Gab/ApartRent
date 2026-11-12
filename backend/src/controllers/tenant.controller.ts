@@ -64,7 +64,24 @@ export const deleteTenant: RequestHandler<IdParams> = async (req, res) => {
 
 export const getTenant: RequestHandler = async (req, res) => {
   try {
-    const tenants = await tenantSchema.find();
+    // search filter by fullName;
+    const fullNameQuery = req.query.fullName;
+    const filter: {
+      fullName?: string 
+    } = {};
+
+    if (fullNameQuery !== undefined){
+      if(typeof fullNameQuery !== "string" || fullNameQuery.trim() === ""){
+        return res.status(400).json({
+          success: false,
+          message: "Full Name must be valid "
+        })
+      }
+
+      filter.fullName = fullNameQuery;
+    }
+
+    const tenants = await tenantSchema.find(filter);
 
     res.status(200).json({
       success: true,

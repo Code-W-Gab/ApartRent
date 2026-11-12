@@ -29,6 +29,10 @@ export interface ITenant {
 
 export type createTenantDTO = Omit<ITenant, "_id">;
 
+export type tenantFilter = {
+  fullName?: string
+}
+
 export interface ApiResponse<T> {
   success: boolean,
   message: string,

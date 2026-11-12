@@ -1,7 +1,9 @@
 import api from "../api/axios";
-import type { ApiResponse, createTenantDTO, ITenant } from "../types/tenant.types";
+import type { ApiResponse, createTenantDTO, ITenant, tenantFilter } from "../types/tenant.types";
 
-export const getTenant = () => api.get<ApiResponse<ITenant[]>>('/api/tenant/get')
+export const getTenant = (
+  filters: tenantFilter = {}
+) => api.get<ApiResponse<ITenant[]>>('/api/tenant/get', { params: filters })
 
 export const createTenant = (
   tenantData: createTenantDTO

@@ -6,15 +6,6 @@ import { useState } from "react"
 import AddTenantModal from "../../components/overlays/AddTenantModal"
 import { useTenant } from "../../hook/useTenant"
 
-
-const navOption:INav[] = [
-  { label: "Active tenants", rooms: 10, desc: "Across your property", icon: UsersRound },
-  { label: "Pending invitations", rooms: 0, desc: "Waiting to be welcomed", icon: Mail },
-  { label: "Expiring leases", rooms: 0, desc: "In the next 30 days", icon: FileText },
-  { label: "Recently moved out", rooms: 1, desc: "This month", icon: DoorOpen }
-]
-
-
 const tenantsOptions: DropdownOption<tenantStatus | "">[] = [
   { option: "All tenants", value: "" },
   { option: "Active", value: "Active" },
@@ -25,7 +16,20 @@ const tenantsOptions: DropdownOption<tenantStatus | "">[] = [
 
 export default function TenantsPage() {
   const [addTenantModal, setAddTenantModal] = useState(false);
-  const { tenants, handleCreateTenant } = useTenant();
+  const [fullNameSearch, setFullNameSearch] = useState("");
+  const { 
+    tenants, 
+    filterTenants, 
+    handleCreateTenant 
+  } = useTenant(fullNameSearch);
+
+  const navOption:INav[] = [
+    { label: "Active tenants", rooms: tenants.length, desc: "Across your property", icon: UsersRound },
+    { label: "Pending invitations", rooms: 0, desc: "Waiting to be welcomed", icon: Mail },
+    { label: "Expiring leases", rooms: 0, desc: "In the next 30 days", icon: FileText },
+    { label: "Recently moved out", rooms: 1, desc: "This month", icon: DoorOpen }
+  ]
+  
 
   return(
     <main>
@@ -75,6 +79,8 @@ export default function TenantsPage() {
                       step="1"
                       placeholder="Search room number..."
                       className="text-sm focus:outline-none text-gray-600 w-full"
+                      value={fullNameSearch}
+                      onChange={(e) => setFullNameSearch(e.target.value)}
                     />
                   </div>
                   <Dropdown dropdownOptions={tenantsOptions}/>
@@ -92,9 +98,9 @@ export default function TenantsPage() {
                   </div>
 
                   {
-                  tenants.length === 0 
+                  filterTenants.length === 0 
                     ? <div className="col-span-3 text-sm text-gray-500 p-4">No tenant found. Try a different tenant name or add a tenant.</div>
-                    : tenants.map(tenant => {
+                    : filterTenants.map(tenant => {
                       return(
                         <div key={tenant._id} className="grid grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.8fr)] *:min-w-0 *:wrap-anywhere items-center gap-4 p-4 text-sm text-gray-500 ">
                           <div className="flex flex-col">
