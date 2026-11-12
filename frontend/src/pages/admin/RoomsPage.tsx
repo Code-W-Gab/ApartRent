@@ -44,6 +44,7 @@ export default function RoomsPage() {
     : undefined;
   const {
     rooms,
+    allRooms,
     handleCreateRoom,
     handleUpdateRoom,
     handleDeleteRoom,
@@ -67,9 +68,9 @@ export default function RoomsPage() {
 
 
   const navOption:INav[] = [
-    { label: "Total rooms", rooms: rooms.length, desc: "Your entire property", icon: BuildingComplex },
-    { label: "Occupied", rooms: rooms.filter(room => room.status === "Occupied").length, desc: "A place to call home", icon: UsersRound },
-    { label: "Available", rooms: rooms.filter(room => room.status === "Available").length, desc: "Ready for move-in", icon: DoorOpen },
+    { label: "Total rooms", rooms: allRooms.length, desc: "Your entire property", icon: BuildingComplex },
+    { label: "Occupied", rooms: allRooms.filter(room => room.status === "Occupied").length, desc: "A place to call home", icon: UsersRound },
+    { label: "Available", rooms: allRooms.filter(room => room.status === "Available").length, desc: "Ready for move-in", icon: DoorOpen },
     { label: "Under maintenance", rooms: 1, desc: "Getting a little attention", icon: Wrench }
   ]
 

@@ -8,6 +8,7 @@ export const useRoom = (
   floorFilter?: floor
 ) => {
   const [rooms, setRooms] = useState<IRoom[]>([]);
+  const [allRooms, setAllRooms] = useState<IRoom[]>([]);
 
   const handleFetchRoom = useCallback(async () => {
     try {
@@ -25,6 +26,19 @@ export const useRoom = (
   useEffect(() => {
     void handleFetchRoom(); 
   }, [handleFetchRoom]);
+
+  const handleFetchAllRooms = async() => {
+    try {
+      const res = await getRoom();
+      setAllRooms(res.data.data ?? []);
+    } catch (error) {
+      console.error("Failed to fetch all rooms:", error);
+    }
+  }
+
+  useEffect(() => {
+    handleFetchAllRooms()
+  })
 
   const handleCreateRoom = async (
     roomData: createRoomDTO,
@@ -67,5 +81,5 @@ export const useRoom = (
     }
   }
 
-  return { handleCreateRoom, handleFetchRoom, handleUpdateRoom, handleDeleteRoom, rooms }
+  return { handleCreateRoom, handleFetchRoom, handleUpdateRoom, handleDeleteRoom, rooms, allRooms }
 }
