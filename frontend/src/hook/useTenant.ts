@@ -10,9 +10,8 @@ export const useTenant = (
 
   const handleFilterTenants = useCallback(async () => {
     try {
-      const res = await getTenant({
-        fullName
-      })
+      const name = fullName?.trim();
+      const res = await getTenant(name ? { fullName: name } : {});
       setFilterTenants(res.data.data ?? []);
     } catch (error) {
       console.error("Failed to fetch tenants:", error);

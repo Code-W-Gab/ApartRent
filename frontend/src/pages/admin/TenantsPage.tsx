@@ -1,4 +1,4 @@
-import { ArrowUpRight, DoorOpen, FileText, Mail, Plus, Search, UsersRound } from "lucide-react"
+import { ArrowUpRight, DoorOpen, FileText, Mail, Plus, Search, UsersRound, X } from "lucide-react"
 import AdminLayout from "../../components/layout/AdminLayout"
 import type { DropdownOption, INav, tenantStatus } from "../../types/tenant.types"
 import Dropdown from "../../components/common/dropdown"
@@ -22,6 +22,10 @@ export default function TenantsPage() {
     filterTenants, 
     handleCreateTenant 
   } = useTenant(fullNameSearch);
+
+  const clearFilters = () => {
+    setFullNameSearch("")
+  }
 
   const navOption:INav[] = [
     { label: "Active tenants", rooms: tenants.length, desc: "Across your property", icon: UsersRound },
@@ -75,15 +79,25 @@ export default function TenantsPage() {
                     <Search size={18} className="text-gray-500"/>
                     <input 
                       type="text" 
-                      min="1"
-                      step="1"
-                      placeholder="Search room number..."
+                      placeholder="Search by tenant name..."
                       className="text-sm focus:outline-none text-gray-600 w-full"
                       value={fullNameSearch}
                       onChange={(e) => setFullNameSearch(e.target.value)}
                     />
                   </div>
-                  <Dropdown dropdownOptions={tenantsOptions}/>
+                  <div className="flex items-center gap-4">
+                    <Dropdown dropdownOptions={tenantsOptions}/>
+                    { 
+                      fullNameSearch !== ""
+                      ? <div className="border-l pl-3 border-[#dfe5ed]">
+                          <button onClick={() => clearFilters()} className="flex items-center gap-1 text-sm px-2 py-2 rounded-lg text-white bg-blue-500 cursor-pointer hover:bg-blue-400">
+                            <X size={16}/>
+                            <span>Clear Filters</span>
+                          </button>
+                        </div>
+                      : ""
+                    }
+                  </div>
                 </div>
 
                 <div className="border-b border-[#dfe5ed]">
