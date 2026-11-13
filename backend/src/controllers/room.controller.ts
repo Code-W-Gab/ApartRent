@@ -64,30 +64,35 @@ export const getRoom: RequestHandler = async (req, res) => {
   try {
     // search filter by room number
     const roomNumberQuery = req.query.roomNumber;
-    const filter: { 
-      roomNumber?: number 
-      status?: IRoom['status']
-      floor?: IRoom['floor']
+
+    const filter: {
+      $expr?: {
+        $regexMatch: {
+          input: { $toString: string };
+          regex: string;
+        };
+      };
+      status?: IRoom["status"];
+      floor?: IRoom["floor"];
     } = {};
 
-    if (roomNumberQuery !== undefined){
-      if(typeof roomNumberQuery !== "string" || roomNumberQuery.trim() === "") {
+    if (roomNumberQuery !== undefined) {
+      if (
+        typeof roomNumberQuery !== "string" ||
+        !/^\d+$/.test(roomNumberQuery.trim())
+      ) {
         return res.status(400).json({
           success: false,
-          message: "roomNumber must be a valid number"
+          message: "roomNumber must contain digits only",
         });
       }
 
-      const roomNumber = Number(roomNumberQuery);
-
-      if (!Number.isSafeInteger(roomNumber) || roomNumber <= 0) {
-        return res.status(400).json({
-          success: false,
-          message: "roomNumber must be a positive integer",
-        });
-      }
-
-      filter.roomNumber = roomNumber;
+      filter.$expr = {
+        $regexMatch: {
+          input: { $toString: "$roomNumber" },
+          regex: roomNumberQuery.trim(),
+        },
+      };
     }
 
     const statusQuery = req.query.status;

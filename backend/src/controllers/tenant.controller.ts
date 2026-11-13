@@ -67,7 +67,7 @@ export const getTenant: RequestHandler = async (req, res) => {
     // search filter by fullName;
     const fullNameQuery = req.query.fullName;
     const filter: {
-      fullName?: string 
+      fullName?: RegExp 
     } = {};
 
     if (fullNameQuery !== undefined){
@@ -78,7 +78,12 @@ export const getTenant: RequestHandler = async (req, res) => {
         })
       }
 
-      filter.fullName = fullNameQuery;
+      const escapedName = fullNameQuery.trim().replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&"
+      );
+
+      filter.fullName = new RegExp(escapedName, "i");
     }
 
     const tenants = await tenantSchema.find(filter);
