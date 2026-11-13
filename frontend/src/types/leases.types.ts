@@ -5,6 +5,11 @@ export interface INav {
   icon: React.ElementType
 }
 
+export interface IProgress {
+  num: number,
+  label: string
+}
+
 export interface DropdownOption<T extends string | number> {
   option: string;
   value: T;

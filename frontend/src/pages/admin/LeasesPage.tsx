@@ -2,6 +2,9 @@ import { ArrowUpRight, Clock, DoorOpen, FileText, Plus, Search } from "lucide-re
 import AdminLayout from "../../components/layout/AdminLayout"
 import type { DropdownOption, INav, leasesStatus } from "../../types/leases.types"
 import Dropdown from "../../components/common/dropdown"
+import { useState } from "react";
+import CreateLeasesModal from "../../components/overlays/CreateLeasesModal";
+import { useTenant } from "../../hook/useTenant";
 
 
 const leasesOptions: DropdownOption<leasesStatus | "">[] = [
@@ -14,6 +17,8 @@ const leasesOptions: DropdownOption<leasesStatus | "">[] = [
 ];
 
 export default function LeasesPage() {
+  const [isCreateLeasesModalOpen, setIsCreateLeasesModalOpen] = useState(false);
+  const { tenants } = useTenant();
 
   const navOption:INav[] = [
     { label: "Active leases", rooms: 14, desc: "Current rental agreements", icon: FileText },
@@ -32,7 +37,7 @@ export default function LeasesPage() {
                 <h1 className="text-3xl font-semibold text-[#243E59]">Leases</h1>
               </div>
               <div>
-                <button className="flex items-center gap-2 px-4 py-3 rounded-md text-white bg-[#243E59] cursor-pointer">
+                <button onClick={() => setIsCreateLeasesModalOpen(true)} className="flex items-center gap-2 px-4 py-3 rounded-md text-white bg-[#243E59] cursor-pointer">
                   <Plus size={18}/>
                   <span className="text-sm">Create lease</span>
                 </button>
@@ -105,6 +110,17 @@ export default function LeasesPage() {
                 </div>
               </div>
           </section>
+
+          {isCreateLeasesModalOpen && (
+            <div className="fixed inset-0 flex bg-gray-800/50 items-center justify-center z-40">
+              <div className="z-50">
+                <CreateLeasesModal
+                  onClose={() => setIsCreateLeasesModalOpen(false)}
+                  tenants={tenants}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </AdminLayout>
     </main>
