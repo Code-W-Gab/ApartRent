@@ -15,6 +15,11 @@ export interface DropdownOption<T extends string | number> {
   value: T;
 }
 
+export type dueDateStatus = 
+  | "1st of each month"
+  | "5th of each month"
+  | "15th of each month"
+  
 export type leasesStatus = 
   | "Active"
   | "Ending Soon"

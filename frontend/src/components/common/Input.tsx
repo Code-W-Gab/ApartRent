@@ -5,7 +5,7 @@ type InputProps = {
   placeholder?: string;
 } & (
   | {
-      type: "text" | "number" | "textarea";
+      type: "text" | "number" | "textarea" | "date";
       value: string;
       setValue: (value: string) => void;
       children?: never;
@@ -66,7 +66,7 @@ export default function Input(props: InputProps) {
           value={props.value}
           onChange={(event) => props.setValue(event.target.value)}
           min={props.type === "number" ? 0 : undefined}
-          step={props.type === "number" ? "0.01" : undefined}
+          step={props.type === "number" ? "1" : undefined}
           className={`${className} h-10`}
         />
       )}
