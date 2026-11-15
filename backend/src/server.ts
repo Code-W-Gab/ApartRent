@@ -5,6 +5,7 @@ import connectDB from "./config/db";
 import cookieParser from "cookie-parser";
 import roomRoute from "./routes/room.routes"
 import tenantRoute from "./routes/tenant.routes"
+import leaseRoute from "./routes/lease.routes"
 dotenv.config()
 
 const app = express();
@@ -27,6 +28,7 @@ app.get("/api/health", (req, res) => {
 
 app.use('/api/room', roomRoute)
 app.use('/api/tenant', tenantRoute)
+app.use('/api/lease', leaseRoute)
 
 const PORT = process.env.PORT || 8080;
 
