@@ -222,3 +222,19 @@ export const createLease: RequestHandler<{}, {}, CreateLeaseBody> = async (
   }
 };
 
+export const getLease: RequestHandler = async(req, res) => {
+  try {
+    const lease = await leaseSchema.find();
+
+    res.status(200).json({
+      success: true,
+      message: "Leases retrieved successfully",
+      data: lease
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error "
+    })
+  }
+}
