@@ -7,6 +7,7 @@ import CreateLeasesModal from "../../components/overlays/CreateLeasesModal";
 import { useTenant } from "../../hook/useTenant";
 import { useRoom } from "../../hook/useRoom";
 import { useLease } from "../../hook/useLease";
+import { formatDate } from "../../utils/date";
 
 
 const leasesOptions: DropdownOption<leasesStatus | "">[] = [
@@ -22,7 +23,7 @@ export default function LeasesPage() {
   const [isCreateLeasesModalOpen, setIsCreateLeasesModalOpen] = useState(false);
   const { tenants } = useTenant();
   const { allRooms } = useRoom();
-  const { handleCreateLease } = useLease();
+  const { handleCreateLease, leases } = useLease();
 
   const navOption:INav[] = [
     { label: "Active leases", rooms: 14, desc: "Current rental agreements", icon: FileText },
@@ -89,28 +90,40 @@ export default function LeasesPage() {
                     <span>Start date</span>
                     <span>End date</span>
                     <span>Rent</span>
-                    <span>Due dat</span>
+                    <span>Due date</span>
                     <span>Status</span>
                     <span>Action</span>
                   </div>
 
-                  <div className="grid grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.8fr)] *:min-w-0 *:wrap-anywhere items-center gap-4 p-4 text-sm text-gray-500 ">
-                    <div className="flex flex-col">
-                      <span className="text-gray-600 font-medium">Gabriel Concepcion</span>
-                      <span className="text-xs">Room 101</span>
-                    </div>
-                    <span>Jan 01, 2026</span>
-                    <span>Mar 31, 2026</span>
-                    <span>₱4,000</span>
-                    <span>5th</span>
-                    <span>Active</span>
-                    <button 
-                      className="flex flex-wrap items-center gap-1.5 hover:underline hover:text-gray-700 cursor-pointer"
-                    >
-                      <span>Details</span>
-                      <ArrowUpRight size={16}/>
-                    </button>
-                  </div>
+                  {
+                    leases.length === 0
+                    ? <div className="col-span-3 text-sm text-gray-500">No lease found. Try a different lease or add a lease.</div>
+                    : leases.map((lease) => {
+                        const tenant = tenants.find((tenant) => tenant._id === lease.tenant)
+                        const roomNumber = allRooms.find((room) => room._id === lease.room)
+                        const dueDay = lease.dueDay?.slice(0, lease.dueDay.indexOf(" "));
+
+                        return(
+                          <div key={lease._id} className="grid grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.8fr)] *:min-w-0 *:wrap-anywhere items-center gap-4 p-4 text-sm text-gray-500 ">
+                            <div className="flex flex-col">
+                              <span className="text-gray-600 font-medium">{tenant?.fullName}</span>
+                              <span className="text-xs">Room {roomNumber?.roomNumber}</span>
+                            </div>
+                            <span>{formatDate(lease.startDate)}</span>
+                            <span>{formatDate(lease.endDate)}</span>
+                            <span>₱{lease.monthlyRent}</span>
+                            <span>{dueDay}</span>
+                            <span>Active</span>
+                            <button 
+                              className="flex flex-wrap items-center gap-1.5 hover:underline hover:text-gray-700 cursor-pointer"
+                            >
+                              <span>Details</span>
+                              <ArrowUpRight size={16}/>
+                            </button>
+                          </div>
+                        )
+                      })
+                  }
                 </div>
               </div>
           </section>
@@ -122,6 +135,7 @@ export default function LeasesPage() {
                   onClose={() => setIsCreateLeasesModalOpen(false)}
                   tenants={tenants}
                   rooms={allRooms}
+                  handleCreateLease={handleCreateLease}
                 />
               </div>
             </div>

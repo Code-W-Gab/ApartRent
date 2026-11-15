@@ -27,7 +27,8 @@ export type leasesStatus =
   | "Ended"
   | "Terminated"
 
-export interface createLeaseDTO {
+export interface ILease {
+  _id: string
   tenant: string;
   room: string;
   startDate: string;
@@ -38,4 +39,12 @@ export interface createLeaseDTO {
   gracePeriod?: number;
   instruction?: string;
   status?: leasesStatus;
+}
+
+export type createLeaseDTO = Omit<ILease, "_id">
+
+export interface ApiResponse<T> {
+  success: boolean,
+  message: string,
+  data: T
 }
