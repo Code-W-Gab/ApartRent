@@ -6,6 +6,7 @@ import { useState } from "react";
 import CreateLeasesModal from "../../components/overlays/CreateLeasesModal";
 import { useTenant } from "../../hook/useTenant";
 import { useRoom } from "../../hook/useRoom";
+import { useLease } from "../../hook/useLease";
 
 
 const leasesOptions: DropdownOption<leasesStatus | "">[] = [
@@ -21,6 +22,7 @@ export default function LeasesPage() {
   const [isCreateLeasesModalOpen, setIsCreateLeasesModalOpen] = useState(false);
   const { tenants } = useTenant();
   const { allRooms } = useRoom();
+  const { handleCreateLease } = useLease();
 
   const navOption:INav[] = [
     { label: "Active leases", rooms: 14, desc: "Current rental agreements", icon: FileText },

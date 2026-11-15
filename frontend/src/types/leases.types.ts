@@ -26,3 +26,16 @@ export type leasesStatus =
   | "Draft"
   | "Ended"
   | "Terminated"
+
+export interface createLeaseDTO {
+  tenant: string;
+  room: string;
+  startDate: string;
+  endDate: string;
+  monthlyRent: number;
+  securityDeposit?: number;
+  dueDay?: dueDateStatus;
+  gracePeriod?: number;
+  instruction?: string;
+  status?: leasesStatus;
+}

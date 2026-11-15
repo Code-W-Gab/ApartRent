@@ -5,12 +5,13 @@ import Dropdown from "../common/dropdown";
 import type { ITenant } from "../../types/tenant.types";
 import { useState } from "react";
 import type { IRoom } from "../../types/room.types";
+import type { useLease } from "../../hook/useLease";
 
 interface ModalProps {
   onClose: () => void;
   tenants: ITenant[];
   rooms: IRoom[];
-  // handleCreateRoom: ReturnType<typeof useRoom>["handleCreateRoom"];
+  handleCreateLease: ReturnType<typeof useLease>["handleCreateLease"];
 }
 
 const progressStepper: IProgress[] = [
@@ -27,7 +28,7 @@ const dueDateOptions: DropdownOption<dueDateStatus>[] = [
 ];
 
 
-export default function CreateLeasesModal({ onClose, tenants, rooms }: ModalProps) {
+export default function CreateLeasesModal({ onClose, tenants, rooms, handleCreateLease }: ModalProps) {
   const [selectedTenantId, setSelectedTenantId] = useState("");
   const [progressNumber, setProgressNumber] = useState(1);
   const [selectedRoom, setSelectedRoom] = useState("");
@@ -40,6 +41,18 @@ export default function CreateLeasesModal({ onClose, tenants, rooms }: ModalProp
   const [gracePeriod, setGracePeriod] = useState("0")
   const [instruction, setInstruction] = useState("Cash by arrangement, bank transfer, or GCash. Include your room number and invoice reference.")
   const [error, setError] = useState("")
+
+  const leaseData = {
+    tenant: selectedTenantId,
+    room: selectedRoom,
+    startDate,
+    endDate,
+    monthlyRent: Number(monthlyRent),
+    securityDeposit: Number(securityDeposit),
+    dueDay,
+    gracePeriod: Number(gracePeriod),
+    instruction
+  }
 
   const tenantOptions: DropdownOption<string>[] = [
     { option: "Select a tenant", value: "" },
@@ -73,6 +86,7 @@ export default function CreateLeasesModal({ onClose, tenants, rooms }: ModalProp
       }
     }
 
+    handleCreateLease(leaseData, onClose)
     setError("")
     setProgressNumber((p) => Math.min(p + 1, progressStepper.length));
   }
