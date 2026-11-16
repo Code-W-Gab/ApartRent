@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Input from "../common/Input";
 import Dropdown from "../common/dropdown";
 import Checkbox from "../common/Checkbox";
+import { roomPhotoUrl } from "../../utils/roomPhotoUrl";
 import { useRoom } from "../../hook/useRoom";
 
 interface ModalProps {

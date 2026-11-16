@@ -42,17 +42,18 @@ export const useRoom = (
 
   const handleCreateRoom = async (
     roomData: createRoomDTO,
-    onClose: () => void
+    onClose: () => void,
+    photos: File[] = []
   ) => {
     try {
-      await createRoom(roomData)
-      await handleFetchRoom()
-      console.log(roomData)
-      onClose()
+      await createRoom(roomData, photos);
+      await handleFetchRoom();
+      onClose();
     } catch (error) {
-      console.log(error)
+      console.error("Failed to create room:", error);
+      window.alert("Could not save the room. Check the details and photos.");
     }
-  }
+  };
 
   const handleUpdateRoom = async (
     id: string, 

@@ -35,6 +35,7 @@ export interface IRoom {
   status: status,
   description?: string,
   amenities: string[],
+  photos: string[],
   notes?: string
 }
 
@@ -44,7 +45,7 @@ export type RoomFilters = {
   floor?: floor;
 };
 
-export type createRoomDTO = Omit<IRoom, "_id">
+export type createRoomDTO = Omit<IRoom, "_id" | "photos">
 
 export type updateRoomDTO = Partial<IRoom>
 

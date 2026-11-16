@@ -34,6 +34,10 @@ const roomSchema = new mongoose.Schema<IRoom>({
     required: true,
     default: []
   },
+  photos: {
+    type: [String],
+    default: []
+  },
   notes: {
     type: String
   }

@@ -138,7 +138,7 @@ export default function TenantsPage() {
                 }
               </div>
 
-              <div className="p-4 text-sm text-gray-500">14 tenants</div>
+              <div className="p-4 text-sm text-gray-500">{tenants.length} tenants</div>
             </div>
           </section>
 

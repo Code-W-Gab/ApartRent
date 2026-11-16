@@ -29,19 +29,13 @@ const roomTypeOptions: DropdownOption<roomType>[] = [
   { option: "Deluxe studio", value: "Deluxe studio" },
 ];
 
-const statusTypeOptions: DropdownOption<status>[] = [
-  { option: "Available", value: "Available" },
-  { option: "Occupied", value: "Occupied" },
-  { option: "Reserved", value: "Reserved" },
-];
-
 export default function AddRoomModal({ onClose, handleCreateRoom }: ModalProps) {
   const [roomNumber, setRoomNumber] = useState("");
   const [floor, setFloor] = useState<floor>(1);
   const [type, setType] = useState<roomType>("Standard studio");
   const [monthlyRent, setMonthlyRent] = useState("");
   const [deposit, setDeposit] = useState("");
-  const [status, setStatus] = useState<status>("Available");
+  const status: status = "Available";
   const [description, setDescription] = useState("");
   const [amenities, setAmenities] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
@@ -118,14 +112,17 @@ export default function AddRoomModal({ onClose, handleCreateRoom }: ModalProps) 
               setValue={setDeposit}
             />
 
-            <Input label="Occupancy status" type="select">
-              <Dropdown<status>
-                id="Occupancy status"
-                dropdownOptions={statusTypeOptions}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[#526174] text-sm font-medium">
+                Occupancy status
+              </label>
+              <input 
+                type="text" 
+                className="border border-[#dfe5ed] text-[#526174] px-3 py-2 rounded-md text-sm" 
                 value={status}
-                setValue={setStatus}
+                disabled
               />
-            </Input>
+            </div>
 
             <div className="col-span-2 space-y-4">
               <div className="flex flex-col gap-1.5">
@@ -180,7 +177,7 @@ export default function AddRoomModal({ onClose, handleCreateRoom }: ModalProps) 
 
       <div className="p-4 flex items-center justify-end gap-3">
         <button onClick={onClose} className="border border-[#dfe5ed] text-[#526174] px-4 py-1.5 rounded-md hover:border-[#bec1c5] cursor-pointer">Cancel</button>
-        <button onClick={() => handleCreateRoom(roomData, onClose)} className="bg-[#243E59] text-white px-4 py-1.5 rounded-md cursor-pointer">Save room</button>
+        <button onClick={() => handleCreateRoom(roomData, onClose, photos)} className="bg-[#243E59] text-white px-4 py-1.5 rounded-md cursor-pointer">Save room</button>
       </div>
     </div>
   );

@@ -2,8 +2,22 @@ import api from "../api/axios";
 import type { ApiResponse, IRoom, RoomFilters, createRoomDTO, updateRoomDTO } from "../types/room.types";
 
 export const createRoom = (
-  roomData: createRoomDTO
-) => api.post('/api/room/create', roomData)
+  roomData: createRoomDTO,
+  photos: File[] = []
+) => {
+  const formData = new FormData();
+
+  formData.append("data", JSON.stringify(roomData));
+
+  photos.forEach((photo) => {
+    formData.append("photos", photo);
+  });
+
+  return api.post<ApiResponse<IRoom>>(
+    "/api/room/create",
+    formData
+  );
+};
 
 export const getRoom = (
   filters: RoomFilters = {}

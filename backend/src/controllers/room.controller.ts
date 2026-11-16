@@ -1,23 +1,59 @@
 import { RequestHandler } from "express";
+import { unlink } from "node:fs";
 import { createRoomDTO, IdParams, IRoom, updateRoomDto } from "../types/room.types";
 import roomSchema from "../models/room.schema";
 
-export const createRoom: RequestHandler<{}, {}, createRoomDTO> = async (req, res) => {
+export const createRoom: RequestHandler = async (req, res) => {
+  const files = (req.files as Express.Multer.File[] | undefined) ?? [];
+
   try {
-    const newRoom = await roomSchema.create(req.body);
+    // FormData sends the room details as a JSON string.
+    const input = JSON.parse(req.body.data);
+
+    if (!input || typeof input !== "object" || Array.isArray(input)) {
+      throw new Error("Invalid room data");
+    }
+
+    const newRoom = await roomSchema.create({
+      roomNumber: input.roomNumber,
+      floor: input.floor,
+      type: input.type,
+      monthlyRent: input.monthlyRent,
+      deposit: input.deposit,
+      status: input.status,
+      description: input.description,
+      amenities: input.amenities,
+      notes: input.notes,
+
+      // Save URL paths in MongoDB.
+      photos: files.map((file) => `/uploads/rooms/${file.filename}`),
+    });
 
     res.status(201).json({
       success: true,
       message: "Room added successfully",
-      data: newRoom
-    })
+      data: newRoom,
+    });
   } catch (error) {
-    res.status(500).json({
+    // Remove uploaded files if saving the room fails.
+    await Promise.allSettled(
+      files.map((file) => unlink(file.path))
+    );
+
+    const invalidInput =
+      error instanceof SyntaxError ||
+      (error instanceof Error &&
+        ["ValidationError", "CastError"].includes(error.name)) ||
+      (error instanceof Error && error.message === "Invalid room data");
+
+    res.status(invalidInput ? 400 : 500).json({
       success: false,
-      message: "Internal server error"
-    })
+      message: invalidInput
+        ? "Please check the room details."
+        : "Could not create the room.",
+    });
   }
-}
+};
 
 export const updateRoom: RequestHandler<IdParams, {}, updateRoomDto> = async (req, res) => {
   try {

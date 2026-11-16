@@ -7,6 +7,7 @@ import AddRoomModal from "../../components/overlays/AddRoomModal"
 import { useRoom } from "../../hook/useRoom"
 import type { floor, IRoom, status, INav, activeFilter } from "../../types/room.types"
 import Status from "../../components/common/Status"
+import { roomPhotoUrl } from "../../utils/roomPhotoUrl";
 
 interface DropdownOption<T extends string | number> {
   option: string;
@@ -188,11 +189,28 @@ export default function RoomsPage() {
                     : paginatedRooms.map((room) => {
                       return(
                         <div key={room._id} className="border border-[#dfe5ed] rounded-lg">
-                          <div className="relative flex items-center justify-center h-40 bg-gray-200 rounded-tl-lg rounded-tr-lg">
-                            <DoorOpen size={40}/>
-                            <Status status={room.status} filterType={isActiveFilter}/>
-                            <div className="absolute bottom-2 left-4 text-sm text-gray-500">{room.floor} / {room.roomNumber}</div>
+                          <div className="relative flex h-40 items-center justify-center overflow-hidden rounded-t-lg bg-gray-200">
+                            {room.photos?.[0] ? (
+                              <img
+                                src={roomPhotoUrl(room.photos[0])}
+                                alt={`Room ${room.roomNumber}`}
+                                loading="lazy"
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <DoorOpen size={40} />
+                            )}
+
+                            <Status
+                              status={room.status}
+                              filterType={isActiveFilter}
+                            />
+
+                            <div className="absolute bottom-2 left-4 rounded bg-white/90 px-2 py-1 text-sm text-gray-700">
+                              {room.floor} / {room.roomNumber}
+                            </div>
                           </div>
+
                           <div className="p-4 space-y-3">
                             <h1 className="text-lg font-medium">Room {room.roomNumber}</h1>
                             <div className="text-sm text-gray-500">{room.type} - Floor {room.floor}</div>

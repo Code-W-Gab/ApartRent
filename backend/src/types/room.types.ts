@@ -16,7 +16,8 @@ export interface IRoom {
   deposit: number,
   status: status,
   description?: string,
-  amenities: [string],
+  amenities: string[],
+  photos: string[],
   notes?: string
 }
 
