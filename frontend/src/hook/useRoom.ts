@@ -39,7 +39,7 @@ export const useRoom = (
 
   useEffect(() => {
     handleFetchAllRooms()
-  })
+  }, [])
 
   const handleCreateRoom = async (
     roomData: createRoomDTO,

@@ -42,7 +42,8 @@ export const useTenant = (
     try {
       await createTenant(tenantData);
       await handleFetchTenants();
-      onClose()
+      await handleFilterTenants();
+      onClose();
     } catch (error) {
       console.error(error);
     }
