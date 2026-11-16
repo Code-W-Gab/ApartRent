@@ -56,6 +56,10 @@ export default function ViewDetailsModal({
   const [notes, setNotes] = useState("");
   const [photos, setPhotos] = useState<File[]>([]);
   const [isEdit, setIsEdit] = useState(false);
+  const [existingPhotos, setExistingPhotos] = useState<string[]>(
+    () => room.photos ?? []
+  );
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     setRoomNumber(String(room.roomNumber));
@@ -67,6 +71,8 @@ export default function ViewDetailsModal({
     setDescription(room.description ?? "");
     setAmenities(room.amenities ?? []);
     setNotes(room.notes ?? "");
+    setExistingPhotos(room.photos ?? []);
+    setPhotos([]);
   }, [room]);
 
 
@@ -81,6 +87,27 @@ export default function ViewDetailsModal({
     amenities,
     notes
   }
+
+  const handleSave = async () => {
+    if (existingPhotos.length + photos.length > 6) {
+      window.alert("A room can have a maximum of 6 photos.");
+      return;
+    }
+  
+    setIsSaving(true);
+  
+    try {
+      await handleUpdateRoom(
+        room._id,
+        roomData,
+        onClose,
+        photos,
+        existingPhotos
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return(
     <div className="flex max-h-[85vh] w-[min(90vw,46rem)] flex-col overflow-hidden rounded-xl bg-white shadow-xl">
@@ -185,11 +212,64 @@ export default function ViewDetailsModal({
                       setValue={setDescription}
                     />
 
-                    <Input
-                      label="Room photos"
-                      type="file"
-                      setFiles={(files) => setPhotos(Array.from(files ?? []))}
-                    />
+                    <div className="space-y-3">
+                      <p className="text-sm font-medium text-[#526174]">
+                        Current photos
+                      </p>
+
+                      {existingPhotos.length === 0 ? (
+                        <p className="text-sm text-gray-500">
+                          No existing photos selected.
+                        </p>
+                      ) : (
+                        <div className="grid grid-cols-3 gap-3">
+                          {existingPhotos.map((photo, index) => (
+                            <div key={photo} className="relative">
+                              <img
+                                src={roomPhotoUrl(photo)}
+                                alt={`Room ${room.roomNumber}, photo ${index + 1}`}
+                                className="h-28 w-full rounded-lg object-cover"
+                              />
+
+                              <button
+                                type="button"
+                                disabled={isSaving}
+                                onClick={() =>
+                                  setExistingPhotos((current) =>
+                                    current.filter((item) => item !== photo)
+                                  )
+                                }
+                                aria-label={`Remove photo ${index + 1}`}
+                                className="absolute right-1 top-1 rounded-full bg-red-500 p-1 text-white disabled:opacity-50"
+                              >
+                                <X size={14} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      <Input
+                        label="Add new photos"
+                        type="file"
+                        setFiles={(files) => setPhotos(Array.from(files ?? []))}
+                      />
+
+                      {photos.length > 0 && (
+                        <div className="space-y-1 text-sm text-gray-500">
+                          <p>New photos selected:</p>
+
+                          {photos.map((photo, index) => (
+                            <p key={`${photo.name}-${index}`}>{photo.name}</p>
+                          ))}
+                        </div>
+                      )}
+
+                      <p className="text-xs text-gray-500">
+                        {existingPhotos.length + photos.length} / 6 photos.
+                        Changes are applied when you save.
+                      </p>
+                    </div>
 
                     <Input
                       label="Administrative notes"
@@ -203,7 +283,14 @@ export default function ViewDetailsModal({
 
                 <div className="flex items-center justify-end gap-3">
                   <button onClick={onClose} className="border border-[#dfe5ed] text-[#526174] px-4 py-1.5 rounded-md hover:border-[#bec1c5] cursor-pointer">Cancel</button>
-                  <button onClick={() => handleUpdateRoom(room._id, roomData, onClose)} className="bg-[#243E59] text-white px-4 py-1.5 rounded-md cursor-pointer">Save room</button>
+                  <button
+                    type="button"
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="rounded-md bg-[#243E59] px-4 py-1.5 text-white enabled:cursor-pointer disabled:opacity-50"
+                  >
+                    {isSaving ? "Saving..." : "Save room"}
+                  </button>
                 </div>
               </div>
             </div>

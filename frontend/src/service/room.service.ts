@@ -19,13 +19,36 @@ export const createRoom = (
   );
 };
 
+
+export const updateRoom = (
+  id: string,
+  roomData: updateRoomDTO,
+  photos: File[] = [],
+  existingPhotos?: string[]
+) => {
+  const formData = new FormData();
+
+  formData.append(
+    "data",
+    JSON.stringify({
+      ...roomData,
+      existingPhotos,
+    })
+  );
+
+  photos.forEach((photo) => {
+    formData.append("photos", photo);
+  });
+
+  return api.put<ApiResponse<IRoom>>(
+    `/api/room/${id}`,
+    formData
+  );
+};
+
 export const getRoom = (
   filters: RoomFilters = {}
 ) => api.get<ApiResponse<IRoom[]>>('/api/room/get', { params: filters })
-
-export const updateRoom = (
-  id: string, roomData: updateRoomDTO
-) => api.put(`/api/room/${id}`, roomData)
 
 export const deleteRoom = (
   id: string

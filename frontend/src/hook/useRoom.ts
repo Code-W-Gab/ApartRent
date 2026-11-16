@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { createRoom, deleteRoom, getRoom, updateRoom } from "../service/room.service"
 import type { IRoom, createRoomDTO, floor, status, updateRoomDTO } from "../types/room.types"
+import { isAxiosError } from "axios";
 
 export const useRoom = (
   roomNumber?: number,
@@ -56,18 +57,26 @@ export const useRoom = (
   };
 
   const handleUpdateRoom = async (
-    id: string, 
-    roomData: updateRoomDTO, 
-    onClose: () => void
+    id: string,
+    roomData: updateRoomDTO,
+    onClose: () => void,
+    photos: File[] = [],
+    existingPhotos?: string[]
   ) => {
     try {
-      await updateRoom(id, roomData)
-      await handleFetchRoom()
-      onClose()
+      await updateRoom(id, roomData, photos, existingPhotos);
+      await handleFetchRoom();
+      onClose();
     } catch (error) {
-      console.log(error)
+      console.error("Failed to update room:", error);
+  
+      const message = isAxiosError<{ message: string }>(error)
+        ? error.response?.data?.message
+        : undefined;
+  
+      window.alert(message ?? "Could not update the room.");
     }
-  }
+  };
 
   const handleDeleteRoom = async (
     id: string,
