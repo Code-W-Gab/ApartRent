@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 import { dueDays, ILease, leaseStatuses } from "../types/lease.types";
 
 const schema = new mongoose.Schema<ILease>({
+  tenantName: {
+    type: String,
+    required: true
+  },
   tenant: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: "Tenant", 

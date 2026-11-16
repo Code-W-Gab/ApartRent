@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { createLease, getLease } from "../service/lease.service"
 import type { ILease, createLeaseDTO } from "../types/leases.types"
 
-export const useLease = () => {
+export const useLease = (
+  tenantName?: string
+) => {
   const [leases, setLeases] = useState<ILease[]>([]);
+  const [filterLease, setFilterLease] = useState<ILease[]>([]);
 
   const handleFetchLeases = async() => {
     try {
@@ -18,6 +21,20 @@ export const useLease = () => {
     handleFetchLeases()
   }, [])
 
+  const handleFilterLeases = useCallback(async () => {
+    try {
+      const name = tenantName?.trim();
+      const res = await getLease(name ? {tenantName: name} : {})
+      setFilterLease(res.data.data ?? [])
+    } catch (error) {
+      console.error("Failed to fetch leases:", error)
+    }
+  }, [tenantName])
+
+  useEffect(() => {
+    void handleFilterLeases();
+  }, [handleFilterLeases])
+
   const handleCreateLease = async(
     leaseData: createLeaseDTO,
     onClose: () => void
@@ -30,5 +47,5 @@ export const useLease = () => {
     }
   }
 
-  return { handleCreateLease, handleFetchLeases, leases }
+  return { handleCreateLease, handleFetchLeases, leases, filterLease }
 }

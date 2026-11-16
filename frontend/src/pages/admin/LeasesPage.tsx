@@ -23,9 +23,10 @@ const leasesOptions: DropdownOption<leasesStatus | "">[] = [
 export default function LeasesPage() {
   const [isCreateLeasesModalOpen, setIsCreateLeasesModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [fullNameSearch, setFullNameSearch] = useState("")
   const { tenants } = useTenant();
   const { allRooms } = useRoom();
-  const { handleCreateLease, leases } = useLease();
+  const { handleCreateLease, filterLease, leases } = useLease(fullNameSearch);
 
   const navOption:INav[] = [
     { label: "Active leases", rooms: 14, desc: "Current rental agreements", icon: FileText },
@@ -79,6 +80,8 @@ export default function LeasesPage() {
                       type="text" 
                       placeholder="Search by tenant name..."
                       className="text-sm focus:outline-none text-gray-600 w-full"
+                      value={fullNameSearch}
+                      onChange={(e) => setFullNameSearch(e.target.value)}
                     />
                   </div>
                   <div className="flex items-center gap-4">
@@ -98,9 +101,9 @@ export default function LeasesPage() {
                   </div>
 
                   {
-                    leases.length === 0
-                    ? <div className="col-span-3 text-sm text-gray-500">No lease found. Try a different lease or add a lease.</div>
-                    : leases.map((lease) => {
+                    filterLease.length === 0
+                    ? <div className="p-4 col-span-3 text-sm text-gray-500">No lease found. Try a different lease or add a lease.</div>
+                    : filterLease.map((lease) => {
                         const tenant = tenants.find((tenant) => tenant._id === lease.tenant)
                         const roomNumber = allRooms.find((room) => room._id === lease.room)
                         const dueDay = lease.dueDay?.slice(0, lease.dueDay.indexOf(" "));

@@ -27,6 +27,10 @@ export type leasesStatus =
   | "Ended"
   | "Terminated"
 
+export interface filterLease {
+  tenantName?: string
+}
+
 export interface ILease {
   _id: string
   tenant: string;

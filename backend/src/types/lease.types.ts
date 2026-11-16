@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 export const leaseStatuses = ["Active", "Ending Soon", "Draft", "Ended", "Terminated"] as const;
 export const dueDays = ["1st of each month", "5th of each month", "15th of each month"] as const;
 export interface ILease {
+  tenantName: string
   tenant: Types.ObjectId;
   room: Types.ObjectId;
   startDate: Date;

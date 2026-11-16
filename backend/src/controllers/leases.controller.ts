@@ -171,6 +171,7 @@ export const createLease: RequestHandler<{}, {}, CreateLeaseBody> = async (
 
     try {
       const lease = await leaseSchema.create({
+        tenantName: tenant.fullName,
         tenant: tenant._id,
         room: room._id,
         startDate,
@@ -224,7 +225,29 @@ export const createLease: RequestHandler<{}, {}, CreateLeaseBody> = async (
 
 export const getLease: RequestHandler = async(req, res) => {
   try {
-    const lease = await leaseSchema.find();
+    // Search filter by name
+    const tenantNameQuery = req.query.tenantName;
+    const filter: {
+      tenantName?: RegExp
+    } = {};
+
+    if (tenantNameQuery !== undefined){
+      if(typeof tenantNameQuery !== "string" || tenantNameQuery.trim() === ""){
+        return res.status(400).json({
+          success: false,
+          message: "Full Name must be valid "
+        })
+      }
+
+      const escapedName = tenantNameQuery.trim().replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&"
+      );
+
+      filter.tenantName = new RegExp(escapedName, "i");
+    }
+
+    const lease = await leaseSchema.find(filter);
 
     res.status(200).json({
       success: true,
