@@ -8,6 +8,7 @@ import { useTenant } from "../../hook/useTenant";
 import { useRoom } from "../../hook/useRoom";
 import { useLease } from "../../hook/useLease";
 import { formatDate } from "../../utils/date";
+import LeaseDetailsModal from "../../components/overlays/LeaseDetailsModal";
 
 
 const leasesOptions: DropdownOption<leasesStatus | "">[] = [
@@ -21,6 +22,7 @@ const leasesOptions: DropdownOption<leasesStatus | "">[] = [
 
 export default function LeasesPage() {
   const [isCreateLeasesModalOpen, setIsCreateLeasesModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const { tenants } = useTenant();
   const { allRooms } = useRoom();
   const { handleCreateLease, leases } = useLease();
@@ -115,6 +117,7 @@ export default function LeasesPage() {
                             <span>{dueDay}</span>
                             <span>Active</span>
                             <button 
+                              onClick={() => setIsDetailsModalOpen(true)}
                               className="flex flex-wrap items-center gap-1.5 hover:underline hover:text-gray-700 cursor-pointer"
                             >
                               <span>Details</span>
@@ -127,6 +130,17 @@ export default function LeasesPage() {
                 </div>
               </div>
           </section>
+
+          {isDetailsModalOpen && (
+            <div className="fixed inset-0 flex bg-gray-800/50 items-center justify-center z-40">
+              <div className="z-50">
+                <LeaseDetailsModal
+                  onClose={() => setIsDetailsModalOpen(false)}
+                  setIsCreateLeasesModalOpen={() => setIsCreateLeasesModalOpen(true)}
+                />
+              </div>
+            </div>
+          )}
 
           {isCreateLeasesModalOpen && (
             <div className="fixed inset-0 flex bg-gray-800/50 items-center justify-center z-40">
