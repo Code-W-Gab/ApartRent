@@ -3,6 +3,7 @@ import AdminLayout from "../../components/layout/AdminLayout"
 import type { DropdownOption, INav, paymentStatus } from "../../types/payment.types"
 import Dropdown from "../../components/common/dropdown";
 import Invoices from "../../components/common/Invoices";
+import Payment from "../../components/common/Payment";
 
 const paymentStatusOptions: DropdownOption<paymentStatus | "">[] = [
   { option: "All leases", value: "" },
@@ -88,8 +89,8 @@ export default function RentPaymentPage() {
                 </div>
               </div>
 
-              <Invoices/>
-
+              <Payment/> 
+              
               <div className="flex items-center gap-2 text-sm text-gray-500 p-3">
                 <ShieldCheck size={18}/>
                 <span>Pending and rejected submissions do not reduce invoice balances.</span>
